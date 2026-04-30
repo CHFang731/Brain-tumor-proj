@@ -1,0 +1,8 @@
+kagglehub
+numpy
+pillow
+pyyaml
+torch
+torchvision
+tqdm
+segmentation-models-pytorch

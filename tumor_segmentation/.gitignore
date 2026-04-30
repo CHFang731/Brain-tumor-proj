@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Local artifacts
+/data/raw/
+/data/processed/
+/models/
+/reports/
+/runs/

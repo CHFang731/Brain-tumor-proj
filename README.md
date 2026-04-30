@@ -2,9 +2,16 @@
 
 Deep learning final project repository, organized into two parts:
 
-- `tumor_detection/`: current completed work for tumor detection.
-- `tumor_segmentation/`: reserved placeholder for future tumor segmentation work.
+- `tumor_detection/`: completed work for tumor detection / classification.
+- `tumor_segmentation/`: active work for tumor segmentation (dataset, training, evaluation pipeline in place).
 
-## Next Step
+## Current Status
 
-Tumor segmentation code and experiments will be added under `tumor_segmentation/` in a later update.
+- Detection module is already available.
+- Segmentation module now includes:
+  - dataset download script
+  - train/val/test split generation
+  - U-Net training pipeline
+  - held-out test evaluation pipeline
+
+See `tumor_segmentation/README.md` for segmentation details and latest metrics.
