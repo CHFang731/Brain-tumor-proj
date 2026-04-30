@@ -10,6 +10,8 @@ import torch
 import torch.nn.functional as F
 from PIL import Image
 from torch.utils.data import Dataset
+from torchvision.transforms import InterpolationMode
+from torchvision.transforms import functional as TF
 
 
 @dataclass(frozen=True)
@@ -28,10 +30,14 @@ class BrainTumorSegDataset(Dataset):
         items: list[dict[str, str]],
         image_size: int,
         training: bool,
+        in_channels: int = 1,
+        stronger_aug: bool = False,
     ) -> None:
         self.items = items
         self.image_size = int(image_size)
         self.training = training
+        self.in_channels = int(in_channels)
+        self.stronger_aug = stronger_aug
 
     def __len__(self) -> int:
         return len(self.items)
@@ -49,6 +55,8 @@ class BrainTumorSegDataset(Dataset):
         mean = ten.mean()
         std = ten.std()
         ten = (ten - mean) / (std + 1e-6)
+        if self.in_channels > 1:
+            ten = ten.repeat(self.in_channels, 1, 1)
         return ten
 
     def _load_mask(self, path: str) -> torch.Tensor:
@@ -74,6 +82,36 @@ class BrainTumorSegDataset(Dataset):
         if k:
             image = torch.rot90(image, k=k, dims=[1, 2])
             mask = torch.rot90(mask, k=k, dims=[1, 2])
+
+        if self.stronger_aug:
+            angle = random.uniform(-15.0, 15.0)
+            translate = [int(random.uniform(-20, 20)), int(random.uniform(-20, 20))]
+            scale = random.uniform(0.9, 1.1)
+            image = TF.affine(
+                image,
+                angle=angle,
+                translate=translate,
+                scale=scale,
+                shear=[0.0, 0.0],
+                interpolation=InterpolationMode.BILINEAR,
+                fill=0.0,
+            )
+            mask = TF.affine(
+                mask,
+                angle=angle,
+                translate=translate,
+                scale=scale,
+                shear=[0.0, 0.0],
+                interpolation=InterpolationMode.NEAREST,
+                fill=0.0,
+            )
+            if random.random() < 0.3:
+                noise = torch.randn_like(image) * random.uniform(0.01, 0.05)
+                image = image + noise
+            if random.random() < 0.3:
+                gain = random.uniform(0.9, 1.1)
+                bias = random.uniform(-0.1, 0.1)
+                image = image * gain + bias
         return image, mask
 
     def __getitem__(self, idx: int) -> dict[str, torch.Tensor | str]:

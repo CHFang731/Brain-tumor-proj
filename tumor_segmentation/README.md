@@ -21,13 +21,16 @@ This module implements brain tumor semantic segmentation with a strict train/val
 
 ## Models
 
-Two model configurations are included:
+Main configurations used in this repo:
 
-1. `configs/segmentation_2d.yaml`
-- Custom 2D U-Net.
+1. `configs/segmentation_2d_smp_long.yaml`
+- U-Net (`segmentation_models_pytorch`) with pretrained `resnet34` encoder.
 
-2. `configs/segmentation_2d_smp.yaml`
-- U-Net with pretrained encoder (`segmentation_models_pytorch`, `resnet34`).
+2. `configs/segmentation_2d_smp_unet_resnet34_256_focal.yaml`
+- U-Net (`resnet34`) with 3-channel input, stronger augmentation, and BCE+Dice+Focal loss.
+
+3. `configs/segmentation_2d_smp_unetpp_384.yaml`
+- U-Net++ (`resnet50`) at larger resolution (exploration run).
 
 ## Commands
 
@@ -41,14 +44,14 @@ cd /home/fangdog/brain_tumor/tumor_segmentation
 Prepare split:
 
 ```bash
-../.venv/bin/python scripts/prepare_segmentation_split.py --config configs/segmentation_2d_smp.yaml --force
+../.venv/bin/python scripts/prepare_segmentation_split.py --config configs/segmentation_2d_smp_unet_resnet34_256_focal.yaml --force
 ```
 
 Train:
 
 ```bash
 CUDA_VISIBLE_DEVICES=0 ../.venv/bin/python scripts/train_segmentation.py \
-  --config configs/segmentation_2d_smp.yaml \
+  --config configs/segmentation_2d_smp_unet_resnet34_256_focal.yaml \
   --device cuda:0
 ```
 
@@ -56,21 +59,38 @@ Evaluate on held-out test split:
 
 ```bash
 ../.venv/bin/python scripts/evaluate_segmentation.py \
-  --config configs/segmentation_2d_smp.yaml \
-  --checkpoint models/smp_unet_resnet34/best_unet2d.pt \
+  --config configs/segmentation_2d_smp_unet_resnet34_256_focal.yaml \
+  --checkpoint models/smp_unet_resnet34_256_focal/best_unet2d.pt \
   --split test \
   --device cuda:0
 ```
 
+Evaluate 2-model ensemble with TTA (current best):
+
+```bash
+../.venv/bin/python scripts/evaluate_ensemble_tta.py \
+  --split test \
+  --device cuda:0 \
+  --weight-a 0.4 \
+  --threshold 0.4 \
+  --output reports/ensemble_tta_metrics_test.json
+```
+
 ## Latest Experiment (2026-04-30)
 
-Using `configs/segmentation_2d_smp.yaml`:
+Single-model best (`configs/segmentation_2d_smp_unet_resnet34_256_focal.yaml`):
 
-- Best validation Dice: `0.7924`
-- Test Dice: `0.7886`
-- Test IoU: `0.6955`
-- Test pixel accuracy: `0.9926`
+- Best validation Dice: `0.8270`
+- Test Dice: `0.8259`
+- Test IoU: `0.7401`
+- Test pixel accuracy: `0.9945`
+
+Best inference strategy so far (2-model ensemble + TTA):
+
+- Test Dice: `0.8553`
+- Test IoU: `0.7745`
+- Test pixel accuracy: `0.9953`
 
 Notes:
 - Pixel-level accuracy is above 85% baseline.
-- Dice is currently below 0.85; further tuning (higher input resolution, stronger augmentations, and longer training) is still needed to push Dice beyond 0.85.
+- Dice target `0.85` has been reached with ensemble + TTA.

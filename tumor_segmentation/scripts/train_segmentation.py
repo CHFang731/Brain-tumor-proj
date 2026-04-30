@@ -23,6 +23,16 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Train binary U-Net on brain tumor segmentation dataset.")
     parser.add_argument("--config", default="configs/segmentation_2d.yaml")
     parser.add_argument("--device", default="auto")
+    parser.add_argument(
+        "--resume-checkpoint",
+        default="",
+        help="Optional checkpoint path (relative to tumor_segmentation/) to continue training from.",
+    )
+    parser.add_argument(
+        "--reset-history",
+        action="store_true",
+        help="When resuming, ignore existing training_history.json and start a fresh history list.",
+    )
     return parser.parse_args()
 
 
@@ -43,7 +53,17 @@ def resolve_device(device_arg: str):
     return torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
-def train_one_epoch(model, loader, optimizer, scaler, device, bce_weight: float, pos_weight):
+def train_one_epoch(
+    model,
+    loader,
+    optimizer,
+    scaler,
+    device,
+    bce_weight: float,
+    pos_weight,
+    focal_weight: float,
+    focal_gamma: float,
+):
     import torch
 
     model.train()
@@ -59,7 +79,14 @@ def train_one_epoch(model, loader, optimizer, scaler, device, bce_weight: float,
         optimizer.zero_grad(set_to_none=True)
         with torch.amp.autocast("cuda", enabled=scaler.is_enabled()):
             logits = model(images)
-            loss = combined_loss(logits, masks, bce_weight=bce_weight, pos_weight=pos_weight)
+            loss = combined_loss(
+                logits,
+                masks,
+                bce_weight=bce_weight,
+                pos_weight=pos_weight,
+                focal_weight=focal_weight,
+                focal_gamma=focal_gamma,
+            )
 
         scaler.scale(loss).backward()
         scaler.step(optimizer)
@@ -80,7 +107,7 @@ def train_one_epoch(model, loader, optimizer, scaler, device, bce_weight: float,
     }
 
 
-def evaluate(model, loader, device):
+def evaluate(model, loader, device, bce_weight: float, focal_weight: float, focal_gamma: float):
     import torch
 
     model.eval()
@@ -94,7 +121,14 @@ def evaluate(model, loader, device):
             images = batch["image"].to(device, non_blocking=True)
             masks = batch["mask"].to(device, non_blocking=True)
             logits = model(images)
-            loss = combined_loss(logits, masks, bce_weight=0.5, pos_weight=None)
+            loss = combined_loss(
+                logits,
+                masks,
+                bce_weight=bce_weight,
+                pos_weight=None,
+                focal_weight=focal_weight,
+                focal_gamma=focal_gamma,
+            )
             metrics = binary_metrics(logits, masks)
             total_loss += float(loss.detach().cpu())
             total_dice += metrics["dice"]
@@ -131,8 +165,22 @@ def main() -> None:
     )
 
     image_size = int(data_cfg.get("image_size", 256))
-    train_ds = BrainTumorSegDataset(split["train"], image_size=image_size, training=True)
-    val_ds = BrainTumorSegDataset(split["val"], image_size=image_size, training=False)
+    in_channels = int(config.get("model", {}).get("in_channels", 1))
+    stronger_aug = bool(train_cfg.get("stronger_aug", False))
+    train_ds = BrainTumorSegDataset(
+        split["train"],
+        image_size=image_size,
+        training=True,
+        in_channels=in_channels,
+        stronger_aug=stronger_aug,
+    )
+    val_ds = BrainTumorSegDataset(
+        split["val"],
+        image_size=image_size,
+        training=False,
+        in_channels=in_channels,
+        stronger_aug=False,
+    )
 
     num_workers = int(data_cfg.get("num_workers", 4))
     batch_size = int(train_cfg.get("batch_size", 16))
@@ -163,26 +211,71 @@ def main() -> None:
         weight_decay=float(train_cfg.get("weight_decay", 1e-5)),
     )
 
+    scheduler = None
+    scheduler_type = str(train_cfg.get("scheduler", "none")).lower()
+    if scheduler_type == "cosine":
+        scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
+            optimizer, T_max=max(1, int(train_cfg.get("scheduler_tmax", 30))), eta_min=float(train_cfg.get("scheduler_eta_min", 1e-6))
+        )
+    elif scheduler_type == "plateau":
+        scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
+            optimizer,
+            mode="max",
+            factor=float(train_cfg.get("scheduler_factor", 0.5)),
+            patience=int(train_cfg.get("scheduler_patience", 4)),
+            min_lr=float(train_cfg.get("scheduler_min_lr", 1e-6)),
+        )
+
     use_amp = bool(train_cfg.get("amp", True)) and device.type == "cuda"
     scaler = torch.amp.GradScaler("cuda", enabled=use_amp)
 
     pos_weight_value = float(train_cfg.get("pos_weight", 1.0))
     pos_weight = torch.tensor([pos_weight_value], device=device)
     bce_weight = float(train_cfg.get("bce_weight", 0.5))
+    focal_weight = float(train_cfg.get("focal_weight", 0.0))
+    focal_gamma = float(train_cfg.get("focal_gamma", 2.0))
 
     output_dir = ensure_dir(ROOT / data_cfg["output_dir"])
     ensure_dir(ROOT / "reports")
 
     best_dice = -1.0
     best_ckpt = output_dir / "best_unet2d.pt"
+    history_path = output_dir / "training_history.json"
     history: list[dict[str, float | int]] = []
     patience = int(train_cfg.get("early_stopping_patience", 8))
     stale_epochs = 0
+    start_epoch = 1
+    resumed = False
+
+    if args.resume_checkpoint:
+        resume_path = ROOT / args.resume_checkpoint
+        if not resume_path.exists():
+            raise FileNotFoundError(f"Resume checkpoint not found: {resume_path}")
+        ckpt = torch.load(resume_path, map_location=device)
+        model.load_state_dict(ckpt["model_state"])
+        if "optimizer_state" in ckpt:
+            optimizer.load_state_dict(ckpt["optimizer_state"])
+        if "scaler_state" in ckpt and scaler.is_enabled():
+            scaler.load_state_dict(ckpt["scaler_state"])
+        if scheduler is not None and "scheduler_state" in ckpt and ckpt["scheduler_state"] is not None:
+            scheduler.load_state_dict(ckpt["scheduler_state"])
+
+        ckpt_epoch = int(ckpt.get("epoch", 0))
+        start_epoch = ckpt_epoch + 1
+        best_dice = float(ckpt.get("best_val_dice", ckpt.get("val_metrics", {}).get("dice", -1.0)))
+        resumed = True
+
+        if history_path.exists() and not args.reset_history:
+            with history_path.open("r", encoding="utf-8") as handle:
+                loaded_history = json.load(handle)
+            if isinstance(loaded_history, list):
+                history = loaded_history
 
     start = time.time()
-    epochs = int(train_cfg.get("epochs", 30))
+    run_epochs = int(train_cfg.get("epochs", 30))
+    end_epoch = start_epoch + run_epochs - 1
 
-    for epoch in range(1, epochs + 1):
+    for epoch in range(start_epoch, end_epoch + 1):
         train_metrics = train_one_epoch(
             model=model,
             loader=train_loader,
@@ -191,8 +284,17 @@ def main() -> None:
             device=device,
             bce_weight=bce_weight,
             pos_weight=pos_weight,
+            focal_weight=focal_weight,
+            focal_gamma=focal_gamma,
         )
-        val_metrics = evaluate(model=model, loader=val_loader, device=device)
+        val_metrics = evaluate(
+            model=model,
+            loader=val_loader,
+            device=device,
+            bce_weight=bce_weight,
+            focal_weight=focal_weight,
+            focal_gamma=focal_gamma,
+        )
 
         if val_metrics["dice"] > best_dice:
             best_dice = val_metrics["dice"]
@@ -200,9 +302,13 @@ def main() -> None:
             torch.save(
                 {
                     "model_state": model.state_dict(),
+                    "optimizer_state": optimizer.state_dict(),
+                    "scaler_state": scaler.state_dict() if scaler.is_enabled() else None,
+                    "scheduler_state": scheduler.state_dict() if scheduler is not None else None,
                     "config": config,
                     "epoch": epoch,
                     "val_metrics": val_metrics,
+                    "best_val_dice": best_dice,
                 },
                 best_ckpt,
             )
@@ -220,16 +326,26 @@ def main() -> None:
             "val_iou": val_metrics["iou"],
             "val_pixel_accuracy": val_metrics["pixel_accuracy"],
             "best_val_dice": best_dice,
+            "learning_rate": optimizer.param_groups[0]["lr"],
         }
         history.append(row)
         print(json.dumps(row, ensure_ascii=True))
+
+        # Keep an up-to-date history file so progress is not lost on interruption.
+        with history_path.open("w", encoding="utf-8") as handle:
+            json.dump(history, handle, indent=2)
+
+        if scheduler is not None:
+            if scheduler_type == "plateau":
+                scheduler.step(val_metrics["dice"])
+            else:
+                scheduler.step()
 
         if stale_epochs >= patience:
             print(f"Early stopping at epoch {epoch} (patience={patience})")
             break
 
     elapsed = time.time() - start
-    history_path = output_dir / "training_history.json"
     with history_path.open("w", encoding="utf-8") as handle:
         json.dump(history, handle, indent=2)
 
@@ -239,6 +355,9 @@ def main() -> None:
         "best_val_dice": best_dice,
         "elapsed_seconds": elapsed,
         "best_checkpoint": str(best_ckpt),
+        "resumed": resumed,
+        "start_epoch": start_epoch,
+        "end_epoch": history[-1]["epoch"] if history else start_epoch - 1,
         "train_count": len(split["train"]),
         "val_count": len(split["val"]),
         "test_count": len(split["test"]),

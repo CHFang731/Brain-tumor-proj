@@ -91,4 +91,22 @@ def build_model(config: dict) -> nn.Module:
             in_channels=int(model_cfg.get("in_channels", 1)),
             classes=int(model_cfg.get("out_channels", 1)),
         )
+    if architecture == "smp_unetplusplus":
+        import segmentation_models_pytorch as smp
+
+        return smp.UnetPlusPlus(
+            encoder_name=str(model_cfg.get("encoder_name", "resnet50")),
+            encoder_weights=model_cfg.get("encoder_weights", "imagenet"),
+            in_channels=int(model_cfg.get("in_channels", 3)),
+            classes=int(model_cfg.get("out_channels", 1)),
+        )
+    if architecture == "smp_deeplabv3plus":
+        import segmentation_models_pytorch as smp
+
+        return smp.DeepLabV3Plus(
+            encoder_name=str(model_cfg.get("encoder_name", "resnet50")),
+            encoder_weights=model_cfg.get("encoder_weights", "imagenet"),
+            in_channels=int(model_cfg.get("in_channels", 3)),
+            classes=int(model_cfg.get("out_channels", 1)),
+        )
     raise ValueError(f"Unsupported architecture: {architecture}")

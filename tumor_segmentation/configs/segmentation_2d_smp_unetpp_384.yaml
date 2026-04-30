@@ -1,0 +1,32 @@
+data:
+  dataset_root: ../kagglehub_cache/datasets/nikhilroxtomar/brain-tumor-segmentation/versions/1
+  split_json: data/processed/split_2d.json
+  output_dir: models/smp_unetpp_resnet50_384
+  image_size: 384
+  num_workers: 4
+
+split:
+  train_fraction: 0.7
+  val_fraction: 0.15
+
+model:
+  architecture: smp_unetplusplus
+  encoder_name: resnet50
+  encoder_weights: imagenet
+  in_channels: 3
+  out_channels: 1
+
+training:
+  seed: 42
+  epochs: 80
+  batch_size: 6
+  learning_rate: 0.0001
+  weight_decay: 0.00001
+  amp: true
+  bce_weight: 0.3
+  pos_weight: 2.5
+  stronger_aug: true
+  early_stopping_patience: 20
+  scheduler: cosine
+  scheduler_tmax: 80
+  scheduler_eta_min: 0.000001

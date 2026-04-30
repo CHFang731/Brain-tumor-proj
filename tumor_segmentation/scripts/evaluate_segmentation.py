@@ -52,6 +52,8 @@ def main() -> None:
         split[args.split],
         image_size=int(data_cfg.get("image_size", 256)),
         training=False,
+        in_channels=int(config.get("model", {}).get("in_channels", 1)),
+        stronger_aug=False,
     )
     loader = DataLoader(
         ds,

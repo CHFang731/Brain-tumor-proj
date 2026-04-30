@@ -19,10 +19,20 @@ def combined_loss(
     targets: torch.Tensor,
     bce_weight: float,
     pos_weight: torch.Tensor | None = None,
+    focal_weight: float = 0.0,
+    focal_gamma: float = 2.0,
 ) -> torch.Tensor:
     bce = F.binary_cross_entropy_with_logits(logits, targets, pos_weight=pos_weight)
     dice = dice_loss_from_logits(logits, targets)
-    return bce_weight * bce + (1.0 - bce_weight) * dice
+    base = bce_weight * bce + (1.0 - bce_weight) * dice
+    if focal_weight <= 0.0:
+        return base
+
+    bce_raw = F.binary_cross_entropy_with_logits(logits, targets, reduction="none")
+    probs = torch.sigmoid(logits)
+    p_t = probs * targets + (1.0 - probs) * (1.0 - targets)
+    focal = ((1.0 - p_t) ** focal_gamma * bce_raw).mean()
+    return (1.0 - focal_weight) * base + focal_weight * focal
 
 
 def binary_metrics(logits: torch.Tensor, targets: torch.Tensor, threshold: float = 0.5, eps: float = 1e-6) -> dict[str, float]:
