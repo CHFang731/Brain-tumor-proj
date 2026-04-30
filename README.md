@@ -1,6 +1,6 @@
 # Brain Tumor Project
 
-This repository is split into two parts:
+Deep learning final project repository, organized into two parts:
 
 - `tumor_detection/`: current completed work for tumor detection.
 - `tumor_segmentation/`: reserved placeholder for future tumor segmentation work.
