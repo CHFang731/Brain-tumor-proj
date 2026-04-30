@@ -1,19 +1,15 @@
-.venv/
-__pycache__/
+/.venv/
+/__pycache__/
 *.pyc
-.pytest_cache/
-.cache/
-.codex
+/.pytest_cache/
+/.cache/
+/.codex
+/kagglehub_cache/
 
-# Training artifacts
-**/runs/
-**/models/
-**/reports/
-
-# Data artifacts
-**/data/raw/brats/*
-**/data/processed/
-**/kagglehub_cache/
-
-# Raw classification dataset (local only)
-**/data/raw/kaggle_classification/
+# Project artifacts inside tumor_detection
+/tumor_detection/runs/
+/tumor_detection/models/
+/tumor_detection/reports/
+/tumor_detection/data/raw/brats/*
+/tumor_detection/data/processed/
+/tumor_detection/data/raw/kaggle_classification/
