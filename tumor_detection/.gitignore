@@ -1,0 +1,14 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.cache/
+runs/
+models/
+reports/
+data/raw/brats/*
+data/processed/
+kagglehub_cache/
+
+# Raw classification dataset (local only)
+data/raw/kaggle_classification/

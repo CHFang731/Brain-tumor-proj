@@ -1,0 +1,13 @@
+kagglehub
+matplotlib
+monai
+nibabel
+numpy
+pandas
+pillow
+pyyaml
+scikit-learn
+tensorboard
+torch
+torchvision
+tqdm

@@ -1,0 +1,29 @@
+data:
+  brats_root: data/raw/brats
+  split_json: data/processed/brats_monai/split.json
+  output_dir: models/segmentation
+  cache_rate: 0.0
+  num_workers: 4
+
+model:
+  name: segresnet
+  in_channels: 4
+  out_channels: 4
+  init_filters: 32
+
+training:
+  epochs: 150
+  batch_size: 1
+  learning_rate: 0.0002
+  weight_decay: 0.00001
+  roi_size: [128, 128, 128]
+  sw_batch_size: 2
+  val_interval: 1
+  amp: true
+  seed: 42
+
+labels:
+  background: 0
+  necrotic_or_non_enhancing_core: 1
+  edema: 2
+  enhancing_tumor: 3
