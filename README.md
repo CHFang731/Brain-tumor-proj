@@ -15,3 +15,8 @@ Deep learning final project repository, organized into two parts:
   - held-out test evaluation pipeline
 
 See `tumor_segmentation/README.md` for segmentation details and latest metrics.
+
+## GitHub Inference Examples and Data
+
+- Before/after inference images (segmentation + classification) and uploaded experiment JSON files are available in:
+  - `github_assets/README.md`

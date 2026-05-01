@@ -10,6 +10,7 @@ import torch
 import torch.nn.functional as F
 from PIL import Image
 from torch.utils.data import Dataset
+from torchvision import transforms as T
 from torchvision.transforms import InterpolationMode
 from torchvision.transforms import functional as TF
 
@@ -32,12 +33,14 @@ class BrainTumorSegDataset(Dataset):
         training: bool,
         in_channels: int = 1,
         stronger_aug: bool = False,
+        aggressive_aug: bool = False,
     ) -> None:
         self.items = items
         self.image_size = int(image_size)
         self.training = training
         self.in_channels = int(in_channels)
         self.stronger_aug = stronger_aug
+        self.aggressive_aug = aggressive_aug
 
     def __len__(self) -> int:
         return len(self.items)
@@ -52,11 +55,6 @@ class BrainTumorSegDataset(Dataset):
             mode="bilinear",
             align_corners=False,
         ).squeeze(0)
-        mean = ten.mean()
-        std = ten.std()
-        ten = (ten - mean) / (std + 1e-6)
-        if self.in_channels > 1:
-            ten = ten.repeat(self.in_channels, 1, 1)
         return ten
 
     def _load_mask(self, path: str) -> torch.Tensor:
@@ -71,6 +69,45 @@ class BrainTumorSegDataset(Dataset):
         ).squeeze(0)
         return ten
 
+    def _random_resized_crop(
+        self,
+        image: torch.Tensor,
+        mask: torch.Tensor,
+        scale: tuple[float, float],
+        ratio: tuple[float, float],
+    ) -> tuple[torch.Tensor, torch.Tensor]:
+        top, left, height, width = T.RandomResizedCrop.get_params(image, scale=scale, ratio=ratio)
+        image = TF.resized_crop(
+            image,
+            top=top,
+            left=left,
+            height=height,
+            width=width,
+            size=[self.image_size, self.image_size],
+            interpolation=InterpolationMode.BILINEAR,
+            antialias=True,
+        )
+        mask = TF.resized_crop(
+            mask,
+            top=top,
+            left=left,
+            height=height,
+            width=width,
+            size=[self.image_size, self.image_size],
+            interpolation=InterpolationMode.NEAREST,
+            antialias=None,
+        )
+        return image, mask
+
+    def _apply_cutout(self, image: torch.Tensor, max_frac: float = 0.22) -> torch.Tensor:
+        _, height, width = image.shape
+        cut_h = max(8, int(height * random.uniform(0.08, max_frac)))
+        cut_w = max(8, int(width * random.uniform(0.08, max_frac)))
+        y0 = random.randint(0, max(0, height - cut_h))
+        x0 = random.randint(0, max(0, width - cut_w))
+        image[:, y0 : y0 + cut_h, x0 : x0 + cut_w] = 0.0
+        return image
+
     def _augment(self, image: torch.Tensor, mask: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
         if random.random() < 0.5:
             image = torch.flip(image, dims=[2])
@@ -84,27 +121,40 @@ class BrainTumorSegDataset(Dataset):
             mask = torch.rot90(mask, k=k, dims=[1, 2])
 
         if self.stronger_aug:
-            angle = random.uniform(-15.0, 15.0)
-            translate = [int(random.uniform(-20, 20)), int(random.uniform(-20, 20))]
-            scale = random.uniform(0.9, 1.1)
-            image = TF.affine(
-                image,
-                angle=angle,
-                translate=translate,
-                scale=scale,
-                shear=[0.0, 0.0],
-                interpolation=InterpolationMode.BILINEAR,
-                fill=0.0,
-            )
-            mask = TF.affine(
-                mask,
-                angle=angle,
-                translate=translate,
-                scale=scale,
-                shear=[0.0, 0.0],
-                interpolation=InterpolationMode.NEAREST,
-                fill=0.0,
-            )
+            if random.random() < 0.9:
+                angle = random.uniform(-18.0, 18.0)
+                translate_bound = int(self.image_size * 0.075)
+                translate = [
+                    int(random.uniform(-translate_bound, translate_bound)),
+                    int(random.uniform(-translate_bound, translate_bound)),
+                ]
+                scale = random.uniform(0.88, 1.12)
+                shear = [random.uniform(-6.0, 6.0), random.uniform(-6.0, 6.0)]
+                image = TF.affine(
+                    image,
+                    angle=angle,
+                    translate=translate,
+                    scale=scale,
+                    shear=shear,
+                    interpolation=InterpolationMode.BILINEAR,
+                    fill=0.0,
+                )
+                mask = TF.affine(
+                    mask,
+                    angle=angle,
+                    translate=translate,
+                    scale=scale,
+                    shear=shear,
+                    interpolation=InterpolationMode.NEAREST,
+                    fill=0.0,
+                )
+            if random.random() < 0.35:
+                image, mask = self._random_resized_crop(
+                    image=image,
+                    mask=mask,
+                    scale=(0.75, 1.0),
+                    ratio=(0.9, 1.1),
+                )
             if random.random() < 0.3:
                 noise = torch.randn_like(image) * random.uniform(0.01, 0.05)
                 image = image + noise
@@ -112,6 +162,70 @@ class BrainTumorSegDataset(Dataset):
                 gain = random.uniform(0.9, 1.1)
                 bias = random.uniform(-0.1, 0.1)
                 image = image * gain + bias
+            if random.random() < 0.2:
+                image = TF.adjust_gamma(image.clamp(0.0, 1.0), gamma=random.uniform(0.85, 1.25), gain=1.0)
+            if random.random() < 0.15:
+                image = TF.gaussian_blur(
+                    image,
+                    kernel_size=[random.choice([3, 5]), random.choice([3, 5])],
+                    sigma=[random.uniform(0.1, 1.0), random.uniform(0.1, 1.0)],
+                )
+            if random.random() < 0.15:
+                image = TF.adjust_sharpness(image, sharpness_factor=random.uniform(0.7, 1.8))
+
+        if self.aggressive_aug:
+            if random.random() < 0.45:
+                image, mask = self._random_resized_crop(
+                    image=image,
+                    mask=mask,
+                    scale=(0.65, 1.0),
+                    ratio=(0.85, 1.15),
+                )
+            if random.random() < 0.35:
+                angle = random.uniform(-25.0, 25.0)
+                translate_bound = int(self.image_size * 0.10)
+                translate = [
+                    int(random.uniform(-translate_bound, translate_bound)),
+                    int(random.uniform(-translate_bound, translate_bound)),
+                ]
+                scale = random.uniform(0.82, 1.18)
+                shear = [random.uniform(-9.0, 9.0), random.uniform(-9.0, 9.0)]
+                image = TF.affine(
+                    image,
+                    angle=angle,
+                    translate=translate,
+                    scale=scale,
+                    shear=shear,
+                    interpolation=InterpolationMode.BILINEAR,
+                    fill=0.0,
+                )
+                mask = TF.affine(
+                    mask,
+                    angle=angle,
+                    translate=translate,
+                    scale=scale,
+                    shear=shear,
+                    interpolation=InterpolationMode.NEAREST,
+                    fill=0.0,
+                )
+            if random.random() < 0.25:
+                image = self._apply_cutout(image)
+            if random.random() < 0.3:
+                noise = torch.randn_like(image) * random.uniform(0.03, 0.08)
+                image = image + noise
+            if random.random() < 0.25:
+                image = TF.adjust_gamma(image.clamp(0.0, 1.0), gamma=random.uniform(0.75, 1.35), gain=1.0)
+            if random.random() < 0.2:
+                image = TF.gaussian_blur(
+                    image,
+                    kernel_size=[5, 5],
+                    sigma=[random.uniform(0.4, 1.4), random.uniform(0.4, 1.4)],
+                )
+            if random.random() < 0.2:
+                image = TF.adjust_sharpness(image, sharpness_factor=random.uniform(0.5, 2.2))
+
+        image = image.clamp(0.0, 1.0)
+        mask = (mask > 0.5).float()
         return image, mask
 
     def __getitem__(self, idx: int) -> dict[str, torch.Tensor | str]:
@@ -120,6 +234,11 @@ class BrainTumorSegDataset(Dataset):
         mask = self._load_mask(item["mask"])
         if self.training:
             image, mask = self._augment(image, mask)
+        mean = image.mean()
+        std = image.std()
+        image = (image - mean) / (std + 1e-6)
+        if self.in_channels > 1:
+            image = image.repeat(self.in_channels, 1, 1)
         return {"image": image, "mask": mask, "id": item["id"]}
 
 

@@ -1,0 +1,12 @@
+{
+  "tag": "tumor_case",
+  "image": "/home/fangdog/brain_tumor/kagglehub_cache/datasets/masoudnickparvar/brain-tumor-mri-dataset/versions/2/Testing/glioma/Te-gl_1.jpg",
+  "predicted_class": "meningioma",
+  "tumor_detected": "Yes",
+  "probabilities": {
+    "glioma": 0.014358303509652615,
+    "meningioma": 0.7338223457336426,
+    "notumor": 0.2315179407596588,
+    "pituitary": 0.020301463082432747
+  }
+}

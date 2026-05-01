@@ -1,0 +1,35 @@
+data:
+  dataset_root: ../kagglehub_cache/datasets/nikhilroxtomar/brain-tumor-segmentation/versions/1
+  split_json: data/processed/split_2d.json
+  output_dir: models/smp_unetpp_effb4_320
+  image_size: 320
+  num_workers: 4
+
+split:
+  train_fraction: 0.7
+  val_fraction: 0.15
+
+model:
+  architecture: smp_unetplusplus
+  encoder_name: timm-efficientnet-b4
+  encoder_weights: imagenet
+  in_channels: 3
+  out_channels: 1
+  decoder_attention_type: scse
+
+training:
+  seed: 42
+  epochs: 90
+  batch_size: 5
+  learning_rate: 0.00008
+  weight_decay: 0.00001
+  amp: true
+  bce_weight: 0.25
+  focal_weight: 0.35
+  focal_gamma: 2.0
+  pos_weight: 2.5
+  stronger_aug: true
+  early_stopping_patience: 18
+  scheduler: cosine
+  scheduler_tmax: 90
+  scheduler_eta_min: 0.000001

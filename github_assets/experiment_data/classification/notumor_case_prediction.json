@@ -1,0 +1,12 @@
+{
+  "tag": "notumor_case",
+  "image": "/home/fangdog/brain_tumor/kagglehub_cache/datasets/masoudnickparvar/brain-tumor-mri-dataset/versions/2/Testing/notumor/Te-no_1.jpg",
+  "predicted_class": "notumor",
+  "tumor_detected": "No",
+  "probabilities": {
+    "glioma": 5.095666438137414e-06,
+    "meningioma": 0.0001872557622846216,
+    "notumor": 0.9997532963752747,
+    "pituitary": 5.439520100480877e-05
+  }
+}

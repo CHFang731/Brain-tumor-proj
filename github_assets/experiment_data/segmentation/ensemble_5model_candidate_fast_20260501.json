@@ -1,0 +1,125 @@
+{
+  "base_reference_test_dice": 0.8650164008140564,
+  "best_by_val": {
+    "candidate": "s42ft",
+    "weights": {
+      "old": 0.17328,
+      "s44": 0.38836,
+      "s45": 0.17936,
+      "s51": 0.209,
+      "s42ft": 0.05
+    },
+    "threshold": 0.38,
+    "agreement_k": 2,
+    "min_size": 96,
+    "fill_holes": false,
+    "val_dice": 0.8624781966209412,
+    "val_iou": 0.7833774089813232,
+    "val_pixel_accuracy": 0.9956150054931641,
+    "test_dice": 0.8647730946540833,
+    "test_iou": 0.7889015078544617,
+    "test_pixel_accuracy": 0.9956262111663818
+  },
+  "best_test_among_candidates": {
+    "candidate": "s43",
+    "weights": {
+      "old": 0.17328,
+      "s44": 0.38836,
+      "s45": 0.17936,
+      "s51": 0.209,
+      "s43": 0.05
+    },
+    "threshold": 0.38,
+    "agreement_k": 2,
+    "min_size": 96,
+    "fill_holes": false,
+    "val_dice": 0.8622739315032959,
+    "val_iou": 0.7832311987876892,
+    "val_pixel_accuracy": 0.995608389377594,
+    "test_dice": 0.8650139570236206,
+    "test_iou": 0.7892360091209412,
+    "test_pixel_accuracy": 0.995635449886322
+  },
+  "all_candidates_best": [
+    {
+      "candidate": "s42ft",
+      "weights": {
+        "old": 0.17328,
+        "s44": 0.38836,
+        "s45": 0.17936,
+        "s51": 0.209,
+        "s42ft": 0.05
+      },
+      "threshold": 0.38,
+      "agreement_k": 2,
+      "min_size": 96,
+      "fill_holes": false,
+      "val_dice": 0.8624781966209412,
+      "val_iou": 0.7833774089813232,
+      "val_pixel_accuracy": 0.9956150054931641,
+      "test_dice": 0.8647730946540833,
+      "test_iou": 0.7889015078544617,
+      "test_pixel_accuracy": 0.9956262111663818
+    },
+    {
+      "candidate": "u256f",
+      "weights": {
+        "old": 0.17328,
+        "s44": 0.38836,
+        "s45": 0.17936,
+        "s51": 0.209,
+        "u256f": 0.05
+      },
+      "threshold": 0.39,
+      "agreement_k": 2,
+      "min_size": 96,
+      "fill_holes": false,
+      "val_dice": 0.8624522089958191,
+      "val_iou": 0.7834044694900513,
+      "val_pixel_accuracy": 0.9956088066101074,
+      "test_dice": 0.8642524480819702,
+      "test_iou": 0.7881360054016113,
+      "test_pixel_accuracy": 0.9956187009811401
+    },
+    {
+      "candidate": "s43",
+      "weights": {
+        "old": 0.17328,
+        "s44": 0.38836,
+        "s45": 0.17936,
+        "s51": 0.209,
+        "s43": 0.05
+      },
+      "threshold": 0.38,
+      "agreement_k": 2,
+      "min_size": 96,
+      "fill_holes": false,
+      "val_dice": 0.8622739315032959,
+      "val_iou": 0.7832311987876892,
+      "val_pixel_accuracy": 0.995608389377594,
+      "test_dice": 0.8650139570236206,
+      "test_iou": 0.7892360091209412,
+      "test_pixel_accuracy": 0.995635449886322
+    },
+    {
+      "candidate": "dl256",
+      "weights": {
+        "old": 0.17328,
+        "s44": 0.38836,
+        "s45": 0.17936,
+        "s51": 0.209,
+        "dl256": 0.05
+      },
+      "threshold": 0.39,
+      "agreement_k": 2,
+      "min_size": 96,
+      "fill_holes": false,
+      "val_dice": 0.8617578744888306,
+      "val_iou": 0.7828087210655212,
+      "val_pixel_accuracy": 0.9956048727035522,
+      "test_dice": 0.8645414710044861,
+      "test_iou": 0.7885352969169617,
+      "test_pixel_accuracy": 0.9956358671188354
+    }
+  ]
+}

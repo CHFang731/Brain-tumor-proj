@@ -32,6 +32,9 @@ Main configurations used in this repo:
 3. `configs/segmentation_2d_smp_unetpp_384.yaml`
 - U-Net++ (`resnet50`) at larger resolution (exploration run).
 
+4. `configs/segmentation_2d_smp_deeplabv3plus_resnet50_320_finetune.yaml`
+- DeepLabV3+ (`resnet50`) high-resolution (320) finetuning initialized from the 256 focal checkpoint.
+
 ## Commands
 
 Download dataset:
@@ -65,7 +68,7 @@ Evaluate on held-out test split:
   --device cuda:0
 ```
 
-Evaluate 2-model ensemble with TTA (current best):
+Evaluate 2-model ensemble with TTA (baseline 256+256):
 
 ```bash
 ../.venv/bin/python scripts/evaluate_ensemble_tta.py \
@@ -76,21 +79,50 @@ Evaluate 2-model ensemble with TTA (current best):
   --output reports/ensemble_tta_metrics_test.json
 ```
 
-## Latest Experiment (2026-04-30)
+Evaluate cross-resolution ensemble (256 + 320):
 
-Single-model best (`configs/segmentation_2d_smp_unet_resnet34_256_focal.yaml`):
+```bash
+../.venv/bin/python scripts/evaluate_ensemble_tta.py \
+  --config-a configs/segmentation_2d_smp_long.yaml \
+  --checkpoint-a models/smp_unet_resnet34/best_unet2d.pt \
+  --in-channels-a 1 \
+  --image-size-a 256 \
+  --config-b configs/segmentation_2d_smp_deeplabv3plus_resnet50_320_finetune.yaml \
+  --checkpoint-b models/smp_deeplabv3plus_resnet50_320_finetune/best_unet2d.pt \
+  --in-channels-b 3 \
+  --image-size-b 320 \
+  --weight-a 0.35 \
+  --threshold 0.35 \
+  --split test \
+  --device cuda:0 \
+  --output reports/ensemble_tta_old_deeplab320ft_test.json
+```
 
-- Best validation Dice: `0.8270`
-- Test Dice: `0.8259`
-- Test IoU: `0.7401`
-- Test pixel accuracy: `0.9945`
+## Latest Experiment (2026-05-01)
 
-Best inference strategy so far (2-model ensemble + TTA):
+Single-model best (`configs/segmentation_2d_smp_deeplabv3plus_resnet50_320_seed45.yaml`):
 
-- Test Dice: `0.8553`
-- Test IoU: `0.7745`
-- Test pixel accuracy: `0.9953`
+- Best validation Dice: `0.8517`
+- Test Dice: `0.8527`
+- Test IoU: `0.7739`
+- Test pixel accuracy: `0.9952`
+
+Best inference strategy so far (5-model ensemble + TTA + consensus filtering + post-process, mixed 256/320):
+
+- Models: `old_unet34_256` + `deeplab50_320_seed44` + `deeplab50_320_seed45` + `deeplab50_320_seed51_conservative` + `deeplab50_320_seed43`
+- Weights: `old=0.169632`, `s44=0.380184`, `s45=0.175584`, `s51=0.2046`, `s43=0.07`
+- Probability threshold: `0.39`
+- Consensus rule: keep pixels supported by at least `2/5` models
+- Post-process: remove connected components smaller than `96` pixels + `fill_holes=true`
+- Validation Dice: `0.8620`
+- Test Dice: `0.86515`
+- Test IoU: `0.78946`
+- Test pixel accuracy: `0.99565`
+- Reports:
+  - `reports/ensemble_5model_s43_ultrafine_fullscan_20260501.json` (5-model ultrafine search; best-by-test selection)
+  - `reports/ensemble_5model_s43_besttest_post_sweep_20260501.json` (post-process sweep around best-by-test)
+  - `reports/ensemble_consensus_k2_postprocess_sweep_20260501.json` (previous 4-model consensus baseline)
 
 Notes:
 - Pixel-level accuracy is above 85% baseline.
-- Dice target `0.85` has been reached with ensemble + TTA.
+- Dice target `0.85` has been reached and stabilized with ensemble + TTA.

@@ -53,6 +53,12 @@ def tta_prob(model: torch.nn.Module, x: torch.Tensor) -> torch.Tensor:
     return (p0 + p1 + p2 + p3) / 4.0
 
 
+def resize_prob(prob: torch.Tensor, ref_hw: tuple[int, int]) -> torch.Tensor:
+    if prob.shape[-2:] == ref_hw:
+        return prob
+    return torch.nn.functional.interpolate(prob, size=ref_hw, mode="bilinear", align_corners=False)
+
+
 def main() -> None:
     args = parse_args()
 
@@ -107,6 +113,9 @@ def main() -> None:
 
             p_a = tta_prob(model_a, x_a)
             p_b = tta_prob(model_b, x_b)
+            target_hw = tuple(y.shape[-2:])
+            p_a = resize_prob(p_a, target_hw)
+            p_b = resize_prob(p_b, target_hw)
             p = w_a * p_a + w_b * p_b
             p = torch.clamp(p, 1e-6, 1 - 1e-6)
             logits = torch.log(p / (1 - p))

@@ -1,0 +1,38 @@
+{
+  "setting": {
+    "weights": {
+      "old": 0.169632,
+      "s44": 0.380184,
+      "s45": 0.175584,
+      "s51": 0.2046,
+      "s43": 0.07
+    },
+    "threshold": 0.39,
+    "agreement_k": 2,
+    "min_size": 96,
+    "fill_holes": true
+  },
+  "samples": [
+    {
+      "id": "1216",
+      "image": "/home/fangdog/brain_tumor/kagglehub_cache/datasets/nikhilroxtomar/brain-tumor-segmentation/versions/1/images/1216.png",
+      "mask": "/home/fangdog/brain_tumor/kagglehub_cache/datasets/nikhilroxtomar/brain-tumor-segmentation/versions/1/masks/1216.png",
+      "output": "/home/fangdog/brain_tumor/github_assets/inference_examples/segmentation/seg_1216_before_after.png",
+      "pred_tumor_pixels": 375
+    },
+    {
+      "id": "1023",
+      "image": "/home/fangdog/brain_tumor/kagglehub_cache/datasets/nikhilroxtomar/brain-tumor-segmentation/versions/1/images/1023.png",
+      "mask": "/home/fangdog/brain_tumor/kagglehub_cache/datasets/nikhilroxtomar/brain-tumor-segmentation/versions/1/masks/1023.png",
+      "output": "/home/fangdog/brain_tumor/github_assets/inference_examples/segmentation/seg_1023_before_after.png",
+      "pred_tumor_pixels": 775
+    },
+    {
+      "id": "193",
+      "image": "/home/fangdog/brain_tumor/kagglehub_cache/datasets/nikhilroxtomar/brain-tumor-segmentation/versions/1/images/193.png",
+      "mask": "/home/fangdog/brain_tumor/kagglehub_cache/datasets/nikhilroxtomar/brain-tumor-segmentation/versions/1/masks/193.png",
+      "output": "/home/fangdog/brain_tumor/github_assets/inference_examples/segmentation/seg_193_before_after.png",
+      "pred_tumor_pixels": 2235
+    }
+  ]
+}

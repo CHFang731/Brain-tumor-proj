@@ -1,0 +1,20 @@
+{
+  "samples": [
+    {
+      "tag": "tumor_case",
+      "image": "/home/fangdog/brain_tumor/kagglehub_cache/datasets/masoudnickparvar/brain-tumor-mri-dataset/versions/2/Testing/glioma/Te-gl_1.jpg",
+      "before_after": "/home/fangdog/brain_tumor/github_assets/inference_examples/classification/tumor_case_before_after.png",
+      "prediction_json": "/home/fangdog/brain_tumor/github_assets/experiment_data/classification/tumor_case_prediction.json",
+      "predicted_class": "meningioma",
+      "tumor_detected": "Yes"
+    },
+    {
+      "tag": "notumor_case",
+      "image": "/home/fangdog/brain_tumor/kagglehub_cache/datasets/masoudnickparvar/brain-tumor-mri-dataset/versions/2/Testing/notumor/Te-no_1.jpg",
+      "before_after": "/home/fangdog/brain_tumor/github_assets/inference_examples/classification/notumor_case_before_after.png",
+      "prediction_json": "/home/fangdog/brain_tumor/github_assets/experiment_data/classification/notumor_case_prediction.json",
+      "predicted_class": "notumor",
+      "tumor_detected": "No"
+    }
+  ]
+}

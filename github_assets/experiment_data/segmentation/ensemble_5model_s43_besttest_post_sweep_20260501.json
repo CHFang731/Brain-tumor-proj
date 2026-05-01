@@ -1,0 +1,173 @@
+{
+  "weights": {
+    "old": 0.169632,
+    "s44": 0.380184,
+    "s45": 0.175584,
+    "s51": 0.2046,
+    "s43": 0.07
+  },
+  "threshold": 0.39,
+  "agreement_k": 2,
+  "best_by_val": {
+    "min_size": 96,
+    "fill_holes": true,
+    "val_dice": 0.8619568347930908,
+    "val_iou": 0.7831539511680603,
+    "val_pixel_accuracy": 0.9956156015396118,
+    "test_dice": 0.8651493191719055,
+    "test_iou": 0.7894629240036011,
+    "test_pixel_accuracy": 0.9956492781639099
+  },
+  "best_by_test": {
+    "min_size": 96,
+    "fill_holes": true,
+    "val_dice": 0.8619568347930908,
+    "val_iou": 0.7831539511680603,
+    "val_pixel_accuracy": 0.9956156015396118,
+    "test_dice": 0.8651493191719055,
+    "test_iou": 0.7894629240036011,
+    "test_pixel_accuracy": 0.9956492781639099
+  },
+  "all": [
+    {
+      "min_size": 32,
+      "fill_holes": false,
+      "val_dice": 0.8619006276130676,
+      "val_iou": 0.7829190492630005,
+      "val_pixel_accuracy": 0.9956045746803284,
+      "test_dice": 0.8649728298187256,
+      "test_iou": 0.7891243100166321,
+      "test_pixel_accuracy": 0.9956369996070862
+    },
+    {
+      "min_size": 32,
+      "fill_holes": true,
+      "val_dice": 0.8619024157524109,
+      "val_iou": 0.7829221487045288,
+      "val_pixel_accuracy": 0.9956046938896179,
+      "test_dice": 0.8649848699569702,
+      "test_iou": 0.7891539931297302,
+      "test_pixel_accuracy": 0.9956375360488892
+    },
+    {
+      "min_size": 48,
+      "fill_holes": false,
+      "val_dice": 0.8618197441101074,
+      "val_iou": 0.7829546332359314,
+      "val_pixel_accuracy": 0.9956053495407104,
+      "test_dice": 0.8649728298187256,
+      "test_iou": 0.7891243100166321,
+      "test_pixel_accuracy": 0.9956369996070862
+    },
+    {
+      "min_size": 48,
+      "fill_holes": true,
+      "val_dice": 0.8618215322494507,
+      "val_iou": 0.7829577326774597,
+      "val_pixel_accuracy": 0.9956054091453552,
+      "test_dice": 0.8649848699569702,
+      "test_iou": 0.7891539931297302,
+      "test_pixel_accuracy": 0.9956375360488892
+    },
+    {
+      "min_size": 64,
+      "fill_holes": false,
+      "val_dice": 0.8618878126144409,
+      "val_iou": 0.7830541133880615,
+      "val_pixel_accuracy": 0.995607316493988,
+      "test_dice": 0.8647972941398621,
+      "test_iou": 0.7889703512191772,
+      "test_pixel_accuracy": 0.9956409335136414
+    },
+    {
+      "min_size": 64,
+      "fill_holes": true,
+      "val_dice": 0.8618896007537842,
+      "val_iou": 0.7830570936203003,
+      "val_pixel_accuracy": 0.9956075549125671,
+      "test_dice": 0.8648092746734619,
+      "test_iou": 0.7890000939369202,
+      "test_pixel_accuracy": 0.9956413507461548
+    },
+    {
+      "min_size": 80,
+      "fill_holes": false,
+      "val_dice": 0.8619362711906433,
+      "val_iou": 0.7831209897994995,
+      "val_pixel_accuracy": 0.9956125617027283,
+      "test_dice": 0.8648431301116943,
+      "test_iou": 0.7890177369117737,
+      "test_pixel_accuracy": 0.9956431984901428
+    },
+    {
+      "min_size": 80,
+      "fill_holes": true,
+      "val_dice": 0.8619380593299866,
+      "val_iou": 0.7831240296363831,
+      "val_pixel_accuracy": 0.9956127405166626,
+      "test_dice": 0.864855170249939,
+      "test_iou": 0.7890474796295166,
+      "test_pixel_accuracy": 0.9956436157226562
+    },
+    {
+      "min_size": 96,
+      "fill_holes": false,
+      "val_dice": 0.8619550466537476,
+      "val_iou": 0.7831509113311768,
+      "val_pixel_accuracy": 0.9956154823303223,
+      "test_dice": 0.8651373386383057,
+      "test_iou": 0.7894332408905029,
+      "test_pixel_accuracy": 0.9956489205360413
+    },
+    {
+      "min_size": 96,
+      "fill_holes": true,
+      "val_dice": 0.8619568347930908,
+      "val_iou": 0.7831539511680603,
+      "val_pixel_accuracy": 0.9956156015396118,
+      "test_dice": 0.8651493191719055,
+      "test_iou": 0.7894629240036011,
+      "test_pixel_accuracy": 0.9956492781639099
+    },
+    {
+      "min_size": 112,
+      "fill_holes": false,
+      "val_dice": 0.8582807183265686,
+      "val_iou": 0.7799830436706543,
+      "val_pixel_accuracy": 0.9956071972846985,
+      "test_dice": 0.8615127801895142,
+      "test_iou": 0.7862921357154846,
+      "test_pixel_accuracy": 0.9956477880477905
+    },
+    {
+      "min_size": 112,
+      "fill_holes": true,
+      "val_dice": 0.8582825064659119,
+      "val_iou": 0.7799860239028931,
+      "val_pixel_accuracy": 0.995607316493988,
+      "test_dice": 0.8615248203277588,
+      "test_iou": 0.7863218784332275,
+      "test_pixel_accuracy": 0.995648205280304
+    },
+    {
+      "min_size": 128,
+      "fill_holes": false,
+      "val_dice": 0.8438947200775146,
+      "val_iou": 0.7675391435623169,
+      "val_pixel_accuracy": 0.9955877065658569,
+      "test_dice": 0.8580386638641357,
+      "test_iou": 0.7833911180496216,
+      "test_pixel_accuracy": 0.9956451058387756
+    },
+    {
+      "min_size": 128,
+      "fill_holes": true,
+      "val_dice": 0.8438964486122131,
+      "val_iou": 0.7675422430038452,
+      "val_pixel_accuracy": 0.9955877065658569,
+      "test_dice": 0.8580507040023804,
+      "test_iou": 0.7834208011627197,
+      "test_pixel_accuracy": 0.9956455826759338
+    }
+  ]
+}

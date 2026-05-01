@@ -63,6 +63,8 @@ def train_one_epoch(
     pos_weight,
     focal_weight: float,
     focal_gamma: float,
+    scheduler=None,
+    scheduler_type: str = "none",
 ):
     import torch
 
@@ -91,6 +93,8 @@ def train_one_epoch(
         scaler.scale(loss).backward()
         scaler.step(optimizer)
         scaler.update()
+        if scheduler is not None and scheduler_type == "onecycle":
+            scheduler.step()
 
         metrics = binary_metrics(logits.detach(), masks)
         total_loss += float(loss.detach().cpu())
@@ -167,12 +171,14 @@ def main() -> None:
     image_size = int(data_cfg.get("image_size", 256))
     in_channels = int(config.get("model", {}).get("in_channels", 1))
     stronger_aug = bool(train_cfg.get("stronger_aug", False))
+    aggressive_aug = bool(train_cfg.get("aggressive_aug", False))
     train_ds = BrainTumorSegDataset(
         split["train"],
         image_size=image_size,
         training=True,
         in_channels=in_channels,
         stronger_aug=stronger_aug,
+        aggressive_aug=aggressive_aug,
     )
     val_ds = BrainTumorSegDataset(
         split["val"],
@@ -180,6 +186,7 @@ def main() -> None:
         training=False,
         in_channels=in_channels,
         stronger_aug=False,
+        aggressive_aug=False,
     )
 
     num_workers = int(data_cfg.get("num_workers", 4))
@@ -211,6 +218,7 @@ def main() -> None:
         weight_decay=float(train_cfg.get("weight_decay", 1e-5)),
     )
 
+    run_epochs = int(train_cfg.get("epochs", 30))
     scheduler = None
     scheduler_type = str(train_cfg.get("scheduler", "none")).lower()
     if scheduler_type == "cosine":
@@ -224,6 +232,17 @@ def main() -> None:
             factor=float(train_cfg.get("scheduler_factor", 0.5)),
             patience=int(train_cfg.get("scheduler_patience", 4)),
             min_lr=float(train_cfg.get("scheduler_min_lr", 1e-6)),
+        )
+    elif scheduler_type == "onecycle":
+        scheduler = torch.optim.lr_scheduler.OneCycleLR(
+            optimizer,
+            max_lr=float(train_cfg.get("onecycle_max_lr", train_cfg.get("learning_rate", 5e-4))),
+            epochs=max(1, run_epochs),
+            steps_per_epoch=max(1, len(train_loader)),
+            pct_start=float(train_cfg.get("onecycle_pct_start", 0.3)),
+            div_factor=float(train_cfg.get("onecycle_div_factor", 25.0)),
+            final_div_factor=float(train_cfg.get("onecycle_final_div_factor", 10000.0)),
+            anneal_strategy=str(train_cfg.get("onecycle_anneal_strategy", "cos")),
         )
 
     use_amp = bool(train_cfg.get("amp", True)) and device.type == "cuda"
@@ -272,7 +291,6 @@ def main() -> None:
                 history = loaded_history
 
     start = time.time()
-    run_epochs = int(train_cfg.get("epochs", 30))
     end_epoch = start_epoch + run_epochs - 1
 
     for epoch in range(start_epoch, end_epoch + 1):
@@ -286,6 +304,8 @@ def main() -> None:
             pos_weight=pos_weight,
             focal_weight=focal_weight,
             focal_gamma=focal_gamma,
+            scheduler=scheduler,
+            scheduler_type=scheduler_type,
         )
         val_metrics = evaluate(
             model=model,
@@ -338,8 +358,10 @@ def main() -> None:
         if scheduler is not None:
             if scheduler_type == "plateau":
                 scheduler.step(val_metrics["dice"])
-            else:
+            elif scheduler_type != "onecycle":
                 scheduler.step()
+            else:
+                pass
 
         if stale_epochs >= patience:
             print(f"Early stopping at epoch {epoch} (patience={patience})")

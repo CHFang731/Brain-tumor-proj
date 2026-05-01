@@ -1,7 +1,30 @@
 from __future__ import annotations
 
+import inspect
+
 import torch
 import torch.nn as nn
+
+
+def _smp_optional_kwargs(model_cfg: dict) -> dict:
+    """Return optional kwargs shared across SMP model constructors."""
+    kwargs = {}
+    for key in (
+        "encoder_depth",
+        "decoder_channels",
+        "decoder_use_batchnorm",
+        "decoder_attention_type",
+        "activation",
+    ):
+        if key in model_cfg:
+            kwargs[key] = model_cfg[key]
+    return kwargs
+
+
+def _filter_ctor_kwargs(ctor, kwargs: dict) -> dict:
+    sig = inspect.signature(ctor)
+    allowed = set(sig.parameters.keys())
+    return {k: v for k, v in kwargs.items() if k in allowed}
 
 
 class DoubleConv(nn.Module):
@@ -85,28 +108,34 @@ def build_model(config: dict) -> nn.Module:
     if architecture == "smp_unet":
         import segmentation_models_pytorch as smp
 
+        extra_kwargs = _filter_ctor_kwargs(smp.Unet, _smp_optional_kwargs(model_cfg))
         return smp.Unet(
             encoder_name=str(model_cfg.get("encoder_name", "resnet34")),
             encoder_weights=model_cfg.get("encoder_weights", "imagenet"),
             in_channels=int(model_cfg.get("in_channels", 1)),
             classes=int(model_cfg.get("out_channels", 1)),
+            **extra_kwargs,
         )
     if architecture == "smp_unetplusplus":
         import segmentation_models_pytorch as smp
 
+        extra_kwargs = _filter_ctor_kwargs(smp.UnetPlusPlus, _smp_optional_kwargs(model_cfg))
         return smp.UnetPlusPlus(
             encoder_name=str(model_cfg.get("encoder_name", "resnet50")),
             encoder_weights=model_cfg.get("encoder_weights", "imagenet"),
             in_channels=int(model_cfg.get("in_channels", 3)),
             classes=int(model_cfg.get("out_channels", 1)),
+            **extra_kwargs,
         )
     if architecture == "smp_deeplabv3plus":
         import segmentation_models_pytorch as smp
 
+        extra_kwargs = _filter_ctor_kwargs(smp.DeepLabV3Plus, _smp_optional_kwargs(model_cfg))
         return smp.DeepLabV3Plus(
             encoder_name=str(model_cfg.get("encoder_name", "resnet50")),
             encoder_weights=model_cfg.get("encoder_weights", "imagenet"),
             in_channels=int(model_cfg.get("in_channels", 3)),
             classes=int(model_cfg.get("out_channels", 1)),
+            **extra_kwargs,
         )
     raise ValueError(f"Unsupported architecture: {architecture}")
