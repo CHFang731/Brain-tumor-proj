@@ -1,0 +1,26 @@
+{
+  "val": {
+    "dice": 0.8661056160926819,
+    "iou": 0.7872344851493835
+  },
+  "test": {
+    "dice": 0.8729320764541626,
+    "iou": 0.7983887791633606
+  },
+  "weights": {
+    "old": 0.13416432028852543,
+    "s44": 0.1266917650036382,
+    "s45": 0.04212724224113383,
+    "effb4ft": 0.11863709702932708,
+    "s384": 0.2610016134645196,
+    "s384s45": 0.1722610648865829,
+    "s384s56": 0.14511689708627287
+  },
+  "threshold": 0.4075,
+  "agreement_k": 3,
+  "postprocess": {
+    "min_size": 88,
+    "fill_holes": true
+  },
+  "source": "scripts/evaluate_cached_ensemble_candidate.py with reports/prob_cache_ref256_20260507"
+}

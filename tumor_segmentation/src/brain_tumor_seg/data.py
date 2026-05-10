@@ -34,6 +34,15 @@ class BrainTumorSegDataset(Dataset):
         in_channels: int = 1,
         stronger_aug: bool = False,
         aggressive_aug: bool = False,
+        conservative_aug: bool = False,
+        train_repeat: int = 1,
+        aug_qc_min_area_ratio: float = 0.45,
+        aug_qc_max_area_ratio: float = 1.85,
+        aug_qc_max_border_zero_increase: float = 0.28,
+        elastic_aug: bool = False,
+        elastic_prob: float = 0.2,
+        elastic_alpha: float = 5.0,
+        elastic_grid_size: int = 5,
     ) -> None:
         self.items = items
         self.image_size = int(image_size)
@@ -41,9 +50,18 @@ class BrainTumorSegDataset(Dataset):
         self.in_channels = int(in_channels)
         self.stronger_aug = stronger_aug
         self.aggressive_aug = aggressive_aug
+        self.conservative_aug = conservative_aug
+        self.train_repeat = max(1, int(train_repeat)) if training else 1
+        self.aug_qc_min_area_ratio = float(aug_qc_min_area_ratio)
+        self.aug_qc_max_area_ratio = float(aug_qc_max_area_ratio)
+        self.aug_qc_max_border_zero_increase = float(aug_qc_max_border_zero_increase)
+        self.elastic_aug = bool(elastic_aug)
+        self.elastic_prob = float(elastic_prob)
+        self.elastic_alpha = float(elastic_alpha)
+        self.elastic_grid_size = int(elastic_grid_size)
 
     def __len__(self) -> int:
-        return len(self.items)
+        return len(self.items) * self.train_repeat
 
     def _load_image(self, path: str) -> torch.Tensor:
         img = Image.open(path).convert("L")
@@ -108,7 +126,42 @@ class BrainTumorSegDataset(Dataset):
         image[:, y0 : y0 + cut_h, x0 : x0 + cut_w] = 0.0
         return image
 
+    def _apply_elastic(self, image: torch.Tensor, mask: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
+        _, height, width = image.shape
+        grid_size = max(3, self.elastic_grid_size)
+        disp = torch.randn(1, 2, grid_size, grid_size, dtype=image.dtype, device=image.device)
+        disp = F.interpolate(disp, size=(height, width), mode="bicubic", align_corners=True).squeeze(0)
+        disp = disp.permute(1, 2, 0)
+        disp[..., 0] *= float(self.elastic_alpha) * 2.0 / max(1, width)
+        disp[..., 1] *= float(self.elastic_alpha) * 2.0 / max(1, height)
+
+        yy, xx = torch.meshgrid(
+            torch.linspace(-1.0, 1.0, height, dtype=image.dtype, device=image.device),
+            torch.linspace(-1.0, 1.0, width, dtype=image.dtype, device=image.device),
+            indexing="ij",
+        )
+        grid = torch.stack((xx, yy), dim=-1) + disp
+        image = F.grid_sample(
+            image.unsqueeze(0),
+            grid.unsqueeze(0),
+            mode="bilinear",
+            padding_mode="zeros",
+            align_corners=True,
+        ).squeeze(0)
+        mask = F.grid_sample(
+            mask.unsqueeze(0),
+            grid.unsqueeze(0),
+            mode="nearest",
+            padding_mode="zeros",
+            align_corners=True,
+        ).squeeze(0)
+        return image, mask
+
     def _augment(self, image: torch.Tensor, mask: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
+        image_orig = image.clone()
+        mask_orig = mask.clone()
+        base_area = float(mask_orig.mean().item())
+
         if random.random() < 0.5:
             image = torch.flip(image, dims=[2])
             mask = torch.flip(mask, dims=[2])
@@ -119,6 +172,59 @@ class BrainTumorSegDataset(Dataset):
         if k:
             image = torch.rot90(image, k=k, dims=[1, 2])
             mask = torch.rot90(mask, k=k, dims=[1, 2])
+
+        if self.conservative_aug:
+            if random.random() < 0.75:
+                angle = random.uniform(-10.0, 10.0)
+                translate_bound = int(self.image_size * 0.05)
+                translate = [
+                    int(random.uniform(-translate_bound, translate_bound)),
+                    int(random.uniform(-translate_bound, translate_bound)),
+                ]
+                scale = random.uniform(0.95, 1.05)
+                shear = [random.uniform(-3.0, 3.0), random.uniform(-3.0, 3.0)]
+                image = TF.affine(
+                    image,
+                    angle=angle,
+                    translate=translate,
+                    scale=scale,
+                    shear=shear,
+                    interpolation=InterpolationMode.BILINEAR,
+                    fill=0.0,
+                )
+                mask = TF.affine(
+                    mask,
+                    angle=angle,
+                    translate=translate,
+                    scale=scale,
+                    shear=shear,
+                    interpolation=InterpolationMode.NEAREST,
+                    fill=0.0,
+                )
+            if random.random() < 0.18:
+                image, mask = self._random_resized_crop(
+                    image=image,
+                    mask=mask,
+                    scale=(0.88, 1.0),
+                    ratio=(0.95, 1.05),
+                )
+            if random.random() < 0.18:
+                noise = torch.randn_like(image) * random.uniform(0.006, 0.02)
+                image = image + noise
+            if random.random() < 0.2:
+                gain = random.uniform(0.95, 1.05)
+                bias = random.uniform(-0.04, 0.04)
+                image = image * gain + bias
+            if random.random() < 0.12:
+                image = TF.adjust_gamma(image.clamp(0.0, 1.0), gamma=random.uniform(0.92, 1.08), gain=1.0)
+            if random.random() < 0.1:
+                image = TF.gaussian_blur(
+                    image,
+                    kernel_size=[3, 3],
+                    sigma=[random.uniform(0.2, 0.6), random.uniform(0.2, 0.6)],
+                )
+            if self.elastic_aug and random.random() < self.elastic_prob:
+                image, mask = self._apply_elastic(image, mask)
 
         if self.stronger_aug:
             if random.random() < 0.9:
@@ -226,10 +332,51 @@ class BrainTumorSegDataset(Dataset):
 
         image = image.clamp(0.0, 1.0)
         mask = (mask > 0.5).float()
+        if not self._augmentation_quality_ok(
+            image_before=image_orig,
+            mask_before=mask_orig,
+            image_after=image,
+            mask_after=mask,
+            base_area=base_area,
+        ):
+            return image_orig, mask_orig
         return image, mask
 
+    @staticmethod
+    def _border_zero_ratio(image: torch.Tensor, edge: int = 6) -> float:
+        _, h, w = image.shape
+        edge = max(1, min(edge, h // 2, w // 2))
+        border = torch.zeros((h, w), dtype=torch.bool, device=image.device)
+        border[:edge, :] = True
+        border[-edge:, :] = True
+        border[:, :edge] = True
+        border[:, -edge:] = True
+        vals = image[:, border]
+        return float((vals <= 1e-4).float().mean().item())
+
+    def _augmentation_quality_ok(
+        self,
+        image_before: torch.Tensor,
+        mask_before: torch.Tensor,
+        image_after: torch.Tensor,
+        mask_after: torch.Tensor,
+        base_area: float,
+    ) -> bool:
+        area_after = float(mask_after.mean().item())
+        if area_after <= 1e-7:
+            return False
+        area_ratio = area_after / max(base_area, 1e-7)
+        if area_ratio < self.aug_qc_min_area_ratio or area_ratio > self.aug_qc_max_area_ratio:
+            return False
+
+        border_before = self._border_zero_ratio(image_before)
+        border_after = self._border_zero_ratio(image_after)
+        if (border_after - border_before) > self.aug_qc_max_border_zero_increase:
+            return False
+        return True
+
     def __getitem__(self, idx: int) -> dict[str, torch.Tensor | str]:
-        item = self.items[idx]
+        item = self.items[idx % len(self.items)]
         image = self._load_image(item["image"])
         mask = self._load_mask(item["mask"])
         if self.training:

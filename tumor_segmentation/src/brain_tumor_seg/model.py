@@ -138,4 +138,15 @@ def build_model(config: dict) -> nn.Module:
             classes=int(model_cfg.get("out_channels", 1)),
             **extra_kwargs,
         )
+    if architecture == "smp_manet":
+        import segmentation_models_pytorch as smp
+
+        extra_kwargs = _filter_ctor_kwargs(smp.MAnet, _smp_optional_kwargs(model_cfg))
+        return smp.MAnet(
+            encoder_name=str(model_cfg.get("encoder_name", "resnet50")),
+            encoder_weights=model_cfg.get("encoder_weights", "imagenet"),
+            in_channels=int(model_cfg.get("in_channels", 3)),
+            classes=int(model_cfg.get("out_channels", 1)),
+            **extra_kwargs,
+        )
     raise ValueError(f"Unsupported architecture: {architecture}")

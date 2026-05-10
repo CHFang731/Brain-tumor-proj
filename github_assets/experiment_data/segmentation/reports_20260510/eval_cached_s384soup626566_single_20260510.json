@@ -1,0 +1,1 @@
+{"val": {"dice": 0.8539077639579773, "iou": 0.7749958038330078}, "test": {"dice": 0.8631960153579712, "iou": 0.7871829271316528}, "weights": {"s384soup626566": 1.0}, "threshold": 0.40025, "agreement_k": 0, "postprocess": {"min_size": 98, "fill_holes": true}, "smooth_sigma": 0.0, "smooth_votes": false}

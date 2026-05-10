@@ -1,0 +1,1419 @@
+{
+  "cache_dir": "/home/fangdog/brain_tumor/tumor_segmentation/reports/prob_cache_ref256_20260507",
+  "ref_size": 256,
+  "small_area_maxs": [
+    0,
+    50,
+    100,
+    150,
+    200,
+    300
+  ],
+  "small_thresholds": [
+    0.25,
+    0.3,
+    0.35,
+    0.38,
+    0.39,
+    0.395,
+    0.40025
+  ],
+  "small_agreement_ks": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "small_min_sizes": [
+    0,
+    16,
+    32,
+    64,
+    80,
+    98
+  ],
+  "best_by_test": [
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 0,
+        "small_threshold": 0.35,
+        "small_agreement_k": 0,
+        "small_min_size": 80
+      },
+      "val": {
+        "dice": 0.8660623654824559,
+        "iou": 0.7871390122801086
+      },
+      "test": {
+        "dice": 0.873210524306203,
+        "iou": 0.7987343345763447
+      },
+      "recovered_counts": {
+        "val": 0,
+        "test": 1
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 0,
+        "small_threshold": 0.35,
+        "small_agreement_k": 0,
+        "small_min_size": 98
+      },
+      "val": {
+        "dice": 0.8660623654824559,
+        "iou": 0.7871390122801086
+      },
+      "test": {
+        "dice": 0.873210524306203,
+        "iou": 0.7987343345763447
+      },
+      "recovered_counts": {
+        "val": 0,
+        "test": 1
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 0,
+        "small_threshold": 0.35,
+        "small_agreement_k": 1,
+        "small_min_size": 80
+      },
+      "val": {
+        "dice": 0.8660623654824559,
+        "iou": 0.7871390122801086
+      },
+      "test": {
+        "dice": 0.873210524306203,
+        "iou": 0.7987343345763447
+      },
+      "recovered_counts": {
+        "val": 0,
+        "test": 1
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 0,
+        "small_threshold": 0.35,
+        "small_agreement_k": 1,
+        "small_min_size": 98
+      },
+      "val": {
+        "dice": 0.8660623654824559,
+        "iou": 0.7871390122801086
+      },
+      "test": {
+        "dice": 0.873210524306203,
+        "iou": 0.7987343345763447
+      },
+      "recovered_counts": {
+        "val": 0,
+        "test": 1
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 0,
+        "small_threshold": 0.35,
+        "small_agreement_k": 2,
+        "small_min_size": 80
+      },
+      "val": {
+        "dice": 0.8660623654824559,
+        "iou": 0.7871390122801086
+      },
+      "test": {
+        "dice": 0.873210524306203,
+        "iou": 0.7987343345763447
+      },
+      "recovered_counts": {
+        "val": 0,
+        "test": 1
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 0,
+        "small_threshold": 0.35,
+        "small_agreement_k": 2,
+        "small_min_size": 98
+      },
+      "val": {
+        "dice": 0.8660623654824559,
+        "iou": 0.7871390122801086
+      },
+      "test": {
+        "dice": 0.873210524306203,
+        "iou": 0.7987343345763447
+      },
+      "recovered_counts": {
+        "val": 0,
+        "test": 1
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 0,
+        "small_threshold": 0.35,
+        "small_agreement_k": 3,
+        "small_min_size": 80
+      },
+      "val": {
+        "dice": 0.8660623654824559,
+        "iou": 0.7871390122801086
+      },
+      "test": {
+        "dice": 0.873210524306203,
+        "iou": 0.7987343345763447
+      },
+      "recovered_counts": {
+        "val": 0,
+        "test": 1
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 0,
+        "small_threshold": 0.35,
+        "small_agreement_k": 3,
+        "small_min_size": 98
+      },
+      "val": {
+        "dice": 0.8660623654824559,
+        "iou": 0.7871390122801086
+      },
+      "test": {
+        "dice": 0.873210524306203,
+        "iou": 0.7987343345763447
+      },
+      "recovered_counts": {
+        "val": 0,
+        "test": 1
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 0,
+        "small_threshold": 0.38,
+        "small_agreement_k": 0,
+        "small_min_size": 64
+      },
+      "val": {
+        "dice": 0.8660623654824559,
+        "iou": 0.7871390122801086
+      },
+      "test": {
+        "dice": 0.873210524306203,
+        "iou": 0.7987343345763447
+      },
+      "recovered_counts": {
+        "val": 0,
+        "test": 1
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 0,
+        "small_threshold": 0.38,
+        "small_agreement_k": 0,
+        "small_min_size": 80
+      },
+      "val": {
+        "dice": 0.8660623654824559,
+        "iou": 0.7871390122801086
+      },
+      "test": {
+        "dice": 0.873210524306203,
+        "iou": 0.7987343345763447
+      },
+      "recovered_counts": {
+        "val": 0,
+        "test": 1
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 0,
+        "small_threshold": 0.38,
+        "small_agreement_k": 0,
+        "small_min_size": 98
+      },
+      "val": {
+        "dice": 0.8660623654824559,
+        "iou": 0.7871390122801086
+      },
+      "test": {
+        "dice": 0.873210524306203,
+        "iou": 0.7987343345763447
+      },
+      "recovered_counts": {
+        "val": 0,
+        "test": 1
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 0,
+        "small_threshold": 0.38,
+        "small_agreement_k": 1,
+        "small_min_size": 64
+      },
+      "val": {
+        "dice": 0.8660623654824559,
+        "iou": 0.7871390122801086
+      },
+      "test": {
+        "dice": 0.873210524306203,
+        "iou": 0.7987343345763447
+      },
+      "recovered_counts": {
+        "val": 0,
+        "test": 1
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 0,
+        "small_threshold": 0.38,
+        "small_agreement_k": 1,
+        "small_min_size": 80
+      },
+      "val": {
+        "dice": 0.8660623654824559,
+        "iou": 0.7871390122801086
+      },
+      "test": {
+        "dice": 0.873210524306203,
+        "iou": 0.7987343345763447
+      },
+      "recovered_counts": {
+        "val": 0,
+        "test": 1
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 0,
+        "small_threshold": 0.38,
+        "small_agreement_k": 1,
+        "small_min_size": 98
+      },
+      "val": {
+        "dice": 0.8660623654824559,
+        "iou": 0.7871390122801086
+      },
+      "test": {
+        "dice": 0.873210524306203,
+        "iou": 0.7987343345763447
+      },
+      "recovered_counts": {
+        "val": 0,
+        "test": 1
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 0,
+        "small_threshold": 0.38,
+        "small_agreement_k": 2,
+        "small_min_size": 64
+      },
+      "val": {
+        "dice": 0.8660623654824559,
+        "iou": 0.7871390122801086
+      },
+      "test": {
+        "dice": 0.873210524306203,
+        "iou": 0.7987343345763447
+      },
+      "recovered_counts": {
+        "val": 0,
+        "test": 1
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 0,
+        "small_threshold": 0.38,
+        "small_agreement_k": 2,
+        "small_min_size": 80
+      },
+      "val": {
+        "dice": 0.8660623654824559,
+        "iou": 0.7871390122801086
+      },
+      "test": {
+        "dice": 0.873210524306203,
+        "iou": 0.7987343345763447
+      },
+      "recovered_counts": {
+        "val": 0,
+        "test": 1
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 0,
+        "small_threshold": 0.38,
+        "small_agreement_k": 2,
+        "small_min_size": 98
+      },
+      "val": {
+        "dice": 0.8660623654824559,
+        "iou": 0.7871390122801086
+      },
+      "test": {
+        "dice": 0.873210524306203,
+        "iou": 0.7987343345763447
+      },
+      "recovered_counts": {
+        "val": 0,
+        "test": 1
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 0,
+        "small_threshold": 0.38,
+        "small_agreement_k": 3,
+        "small_min_size": 64
+      },
+      "val": {
+        "dice": 0.8660623654824559,
+        "iou": 0.7871390122801086
+      },
+      "test": {
+        "dice": 0.873210524306203,
+        "iou": 0.7987343345763447
+      },
+      "recovered_counts": {
+        "val": 0,
+        "test": 1
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 0,
+        "small_threshold": 0.38,
+        "small_agreement_k": 3,
+        "small_min_size": 80
+      },
+      "val": {
+        "dice": 0.8660623654824559,
+        "iou": 0.7871390122801086
+      },
+      "test": {
+        "dice": 0.873210524306203,
+        "iou": 0.7987343345763447
+      },
+      "recovered_counts": {
+        "val": 0,
+        "test": 1
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 0,
+        "small_threshold": 0.38,
+        "small_agreement_k": 3,
+        "small_min_size": 98
+      },
+      "val": {
+        "dice": 0.8660623654824559,
+        "iou": 0.7871390122801086
+      },
+      "test": {
+        "dice": 0.873210524306203,
+        "iou": 0.7987343345763447
+      },
+      "recovered_counts": {
+        "val": 0,
+        "test": 1
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 0,
+        "small_threshold": 0.39,
+        "small_agreement_k": 0,
+        "small_min_size": 64
+      },
+      "val": {
+        "dice": 0.8660623654824559,
+        "iou": 0.7871390122801086
+      },
+      "test": {
+        "dice": 0.873210524306203,
+        "iou": 0.7987343345763447
+      },
+      "recovered_counts": {
+        "val": 0,
+        "test": 1
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 0,
+        "small_threshold": 0.39,
+        "small_agreement_k": 0,
+        "small_min_size": 80
+      },
+      "val": {
+        "dice": 0.8660623654824559,
+        "iou": 0.7871390122801086
+      },
+      "test": {
+        "dice": 0.873210524306203,
+        "iou": 0.7987343345763447
+      },
+      "recovered_counts": {
+        "val": 0,
+        "test": 1
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 0,
+        "small_threshold": 0.39,
+        "small_agreement_k": 0,
+        "small_min_size": 98
+      },
+      "val": {
+        "dice": 0.8660623654824559,
+        "iou": 0.7871390122801086
+      },
+      "test": {
+        "dice": 0.873210524306203,
+        "iou": 0.7987343345763447
+      },
+      "recovered_counts": {
+        "val": 0,
+        "test": 1
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 0,
+        "small_threshold": 0.39,
+        "small_agreement_k": 1,
+        "small_min_size": 64
+      },
+      "val": {
+        "dice": 0.8660623654824559,
+        "iou": 0.7871390122801086
+      },
+      "test": {
+        "dice": 0.873210524306203,
+        "iou": 0.7987343345763447
+      },
+      "recovered_counts": {
+        "val": 0,
+        "test": 1
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 0,
+        "small_threshold": 0.39,
+        "small_agreement_k": 1,
+        "small_min_size": 80
+      },
+      "val": {
+        "dice": 0.8660623654824559,
+        "iou": 0.7871390122801086
+      },
+      "test": {
+        "dice": 0.873210524306203,
+        "iou": 0.7987343345763447
+      },
+      "recovered_counts": {
+        "val": 0,
+        "test": 1
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 0,
+        "small_threshold": 0.39,
+        "small_agreement_k": 1,
+        "small_min_size": 98
+      },
+      "val": {
+        "dice": 0.8660623654824559,
+        "iou": 0.7871390122801086
+      },
+      "test": {
+        "dice": 0.873210524306203,
+        "iou": 0.7987343345763447
+      },
+      "recovered_counts": {
+        "val": 0,
+        "test": 1
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 0,
+        "small_threshold": 0.39,
+        "small_agreement_k": 2,
+        "small_min_size": 64
+      },
+      "val": {
+        "dice": 0.8660623654824559,
+        "iou": 0.7871390122801086
+      },
+      "test": {
+        "dice": 0.873210524306203,
+        "iou": 0.7987343345763447
+      },
+      "recovered_counts": {
+        "val": 0,
+        "test": 1
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 0,
+        "small_threshold": 0.39,
+        "small_agreement_k": 2,
+        "small_min_size": 80
+      },
+      "val": {
+        "dice": 0.8660623654824559,
+        "iou": 0.7871390122801086
+      },
+      "test": {
+        "dice": 0.873210524306203,
+        "iou": 0.7987343345763447
+      },
+      "recovered_counts": {
+        "val": 0,
+        "test": 1
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 0,
+        "small_threshold": 0.39,
+        "small_agreement_k": 2,
+        "small_min_size": 98
+      },
+      "val": {
+        "dice": 0.8660623654824559,
+        "iou": 0.7871390122801086
+      },
+      "test": {
+        "dice": 0.873210524306203,
+        "iou": 0.7987343345763447
+      },
+      "recovered_counts": {
+        "val": 0,
+        "test": 1
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 0,
+        "small_threshold": 0.39,
+        "small_agreement_k": 3,
+        "small_min_size": 64
+      },
+      "val": {
+        "dice": 0.8660623654824559,
+        "iou": 0.7871390122801086
+      },
+      "test": {
+        "dice": 0.873210524306203,
+        "iou": 0.7987343345763447
+      },
+      "recovered_counts": {
+        "val": 0,
+        "test": 1
+      }
+    }
+  ],
+  "best_by_val": [
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 300,
+        "small_threshold": 0.40025,
+        "small_agreement_k": 0,
+        "small_min_size": 64
+      },
+      "val": {
+        "dice": 0.8661026107098575,
+        "iou": 0.7872041014663059
+      },
+      "test": {
+        "dice": 0.8727029492859011,
+        "iou": 0.798083257876262
+      },
+      "recovered_counts": {
+        "val": 71,
+        "test": 43
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 300,
+        "small_threshold": 0.40025,
+        "small_agreement_k": 0,
+        "small_min_size": 80
+      },
+      "val": {
+        "dice": 0.8661026107098575,
+        "iou": 0.7872041014663059
+      },
+      "test": {
+        "dice": 0.8727029492859011,
+        "iou": 0.798083257876262
+      },
+      "recovered_counts": {
+        "val": 71,
+        "test": 43
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 300,
+        "small_threshold": 0.40025,
+        "small_agreement_k": 0,
+        "small_min_size": 98
+      },
+      "val": {
+        "dice": 0.8661026107098575,
+        "iou": 0.7872041014663059
+      },
+      "test": {
+        "dice": 0.8727029492859011,
+        "iou": 0.798083257876262
+      },
+      "recovered_counts": {
+        "val": 71,
+        "test": 43
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 300,
+        "small_threshold": 0.40025,
+        "small_agreement_k": 1,
+        "small_min_size": 64
+      },
+      "val": {
+        "dice": 0.8661026107098575,
+        "iou": 0.7872041014663059
+      },
+      "test": {
+        "dice": 0.8727029492859011,
+        "iou": 0.798083257876262
+      },
+      "recovered_counts": {
+        "val": 71,
+        "test": 43
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 300,
+        "small_threshold": 0.40025,
+        "small_agreement_k": 1,
+        "small_min_size": 80
+      },
+      "val": {
+        "dice": 0.8661026107098575,
+        "iou": 0.7872041014663059
+      },
+      "test": {
+        "dice": 0.8727029492859011,
+        "iou": 0.798083257876262
+      },
+      "recovered_counts": {
+        "val": 71,
+        "test": 43
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 300,
+        "small_threshold": 0.40025,
+        "small_agreement_k": 1,
+        "small_min_size": 98
+      },
+      "val": {
+        "dice": 0.8661026107098575,
+        "iou": 0.7872041014663059
+      },
+      "test": {
+        "dice": 0.8727029492859011,
+        "iou": 0.798083257876262
+      },
+      "recovered_counts": {
+        "val": 71,
+        "test": 43
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 150,
+        "small_threshold": 0.3,
+        "small_agreement_k": 3,
+        "small_min_size": 80
+      },
+      "val": {
+        "dice": 0.8661023560421235,
+        "iou": 0.7871963494403172
+      },
+      "test": {
+        "dice": 0.8729290499356038,
+        "iou": 0.798327896946886
+      },
+      "recovered_counts": {
+        "val": 12,
+        "test": 9
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 150,
+        "small_threshold": 0.3,
+        "small_agreement_k": 3,
+        "small_min_size": 98
+      },
+      "val": {
+        "dice": 0.8661023560421235,
+        "iou": 0.7871963494403172
+      },
+      "test": {
+        "dice": 0.8729290499356038,
+        "iou": 0.798327896946886
+      },
+      "recovered_counts": {
+        "val": 12,
+        "test": 9
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 300,
+        "small_threshold": 0.40025,
+        "small_agreement_k": 2,
+        "small_min_size": 64
+      },
+      "val": {
+        "dice": 0.8660984796962146,
+        "iou": 0.7871971630929604
+      },
+      "test": {
+        "dice": 0.8726964249954217,
+        "iou": 0.7980725192753403
+      },
+      "recovered_counts": {
+        "val": 71,
+        "test": 43
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 300,
+        "small_threshold": 0.40025,
+        "small_agreement_k": 2,
+        "small_min_size": 80
+      },
+      "val": {
+        "dice": 0.8660984796962146,
+        "iou": 0.7871971630929604
+      },
+      "test": {
+        "dice": 0.8726964249954217,
+        "iou": 0.7980725192753403
+      },
+      "recovered_counts": {
+        "val": 71,
+        "test": 43
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 300,
+        "small_threshold": 0.40025,
+        "small_agreement_k": 2,
+        "small_min_size": 98
+      },
+      "val": {
+        "dice": 0.8660984796962146,
+        "iou": 0.7871971630929604
+      },
+      "test": {
+        "dice": 0.8726964249954217,
+        "iou": 0.7980725192753403
+      },
+      "recovered_counts": {
+        "val": 71,
+        "test": 43
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 100,
+        "small_threshold": 0.3,
+        "small_agreement_k": 3,
+        "small_min_size": 0
+      },
+      "val": {
+        "dice": 0.8660918664874773,
+        "iou": 0.7871836567311209
+      },
+      "test": {
+        "dice": 0.8732105243059725,
+        "iou": 0.7987343345761142
+      },
+      "recovered_counts": {
+        "val": 1,
+        "test": 1
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 100,
+        "small_threshold": 0.3,
+        "small_agreement_k": 3,
+        "small_min_size": 16
+      },
+      "val": {
+        "dice": 0.8660918664874773,
+        "iou": 0.7871836567311209
+      },
+      "test": {
+        "dice": 0.8732105243059725,
+        "iou": 0.7987343345761142
+      },
+      "recovered_counts": {
+        "val": 1,
+        "test": 1
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 100,
+        "small_threshold": 0.3,
+        "small_agreement_k": 3,
+        "small_min_size": 32
+      },
+      "val": {
+        "dice": 0.8660918664874773,
+        "iou": 0.7871836567311209
+      },
+      "test": {
+        "dice": 0.8732105243059725,
+        "iou": 0.7987343345761142
+      },
+      "recovered_counts": {
+        "val": 1,
+        "test": 1
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 100,
+        "small_threshold": 0.3,
+        "small_agreement_k": 3,
+        "small_min_size": 64
+      },
+      "val": {
+        "dice": 0.8660918664874773,
+        "iou": 0.7871836567311209
+      },
+      "test": {
+        "dice": 0.8732105243059725,
+        "iou": 0.7987343345761142
+      },
+      "recovered_counts": {
+        "val": 1,
+        "test": 1
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 100,
+        "small_threshold": 0.3,
+        "small_agreement_k": 3,
+        "small_min_size": 80
+      },
+      "val": {
+        "dice": 0.8660918664874773,
+        "iou": 0.7871836567311209
+      },
+      "test": {
+        "dice": 0.8732105243059725,
+        "iou": 0.7987343345761142
+      },
+      "recovered_counts": {
+        "val": 1,
+        "test": 1
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 100,
+        "small_threshold": 0.3,
+        "small_agreement_k": 3,
+        "small_min_size": 98
+      },
+      "val": {
+        "dice": 0.8660918664874773,
+        "iou": 0.7871836567311209
+      },
+      "test": {
+        "dice": 0.8732105243059725,
+        "iou": 0.7987343345761142
+      },
+      "recovered_counts": {
+        "val": 1,
+        "test": 1
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 100,
+        "small_threshold": 0.3,
+        "small_agreement_k": 0,
+        "small_min_size": 0
+      },
+      "val": {
+        "dice": 0.8660835668713651,
+        "iou": 0.787170990165852
+      },
+      "test": {
+        "dice": 0.8732105243059473,
+        "iou": 0.798734334576089
+      },
+      "recovered_counts": {
+        "val": 1,
+        "test": 1
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 100,
+        "small_threshold": 0.3,
+        "small_agreement_k": 0,
+        "small_min_size": 16
+      },
+      "val": {
+        "dice": 0.8660835668713651,
+        "iou": 0.787170990165852
+      },
+      "test": {
+        "dice": 0.8732105243059473,
+        "iou": 0.798734334576089
+      },
+      "recovered_counts": {
+        "val": 1,
+        "test": 1
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 100,
+        "small_threshold": 0.3,
+        "small_agreement_k": 0,
+        "small_min_size": 32
+      },
+      "val": {
+        "dice": 0.8660835668713651,
+        "iou": 0.787170990165852
+      },
+      "test": {
+        "dice": 0.8732105243059473,
+        "iou": 0.798734334576089
+      },
+      "recovered_counts": {
+        "val": 1,
+        "test": 1
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 100,
+        "small_threshold": 0.3,
+        "small_agreement_k": 0,
+        "small_min_size": 64
+      },
+      "val": {
+        "dice": 0.8660835668713651,
+        "iou": 0.787170990165852
+      },
+      "test": {
+        "dice": 0.8732105243059473,
+        "iou": 0.798734334576089
+      },
+      "recovered_counts": {
+        "val": 1,
+        "test": 1
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 100,
+        "small_threshold": 0.3,
+        "small_agreement_k": 0,
+        "small_min_size": 80
+      },
+      "val": {
+        "dice": 0.8660835668713651,
+        "iou": 0.787170990165852
+      },
+      "test": {
+        "dice": 0.8732105243059473,
+        "iou": 0.798734334576089
+      },
+      "recovered_counts": {
+        "val": 1,
+        "test": 1
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 100,
+        "small_threshold": 0.3,
+        "small_agreement_k": 0,
+        "small_min_size": 98
+      },
+      "val": {
+        "dice": 0.8660835668713651,
+        "iou": 0.787170990165852
+      },
+      "test": {
+        "dice": 0.8732105243059473,
+        "iou": 0.798734334576089
+      },
+      "recovered_counts": {
+        "val": 1,
+        "test": 1
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 100,
+        "small_threshold": 0.3,
+        "small_agreement_k": 1,
+        "small_min_size": 0
+      },
+      "val": {
+        "dice": 0.8660835668713651,
+        "iou": 0.787170990165852
+      },
+      "test": {
+        "dice": 0.8732105243059473,
+        "iou": 0.798734334576089
+      },
+      "recovered_counts": {
+        "val": 1,
+        "test": 1
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 100,
+        "small_threshold": 0.3,
+        "small_agreement_k": 1,
+        "small_min_size": 16
+      },
+      "val": {
+        "dice": 0.8660835668713651,
+        "iou": 0.787170990165852
+      },
+      "test": {
+        "dice": 0.8732105243059473,
+        "iou": 0.798734334576089
+      },
+      "recovered_counts": {
+        "val": 1,
+        "test": 1
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 100,
+        "small_threshold": 0.3,
+        "small_agreement_k": 1,
+        "small_min_size": 32
+      },
+      "val": {
+        "dice": 0.8660835668713651,
+        "iou": 0.787170990165852
+      },
+      "test": {
+        "dice": 0.8732105243059473,
+        "iou": 0.798734334576089
+      },
+      "recovered_counts": {
+        "val": 1,
+        "test": 1
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 100,
+        "small_threshold": 0.3,
+        "small_agreement_k": 1,
+        "small_min_size": 64
+      },
+      "val": {
+        "dice": 0.8660835668713651,
+        "iou": 0.787170990165852
+      },
+      "test": {
+        "dice": 0.8732105243059473,
+        "iou": 0.798734334576089
+      },
+      "recovered_counts": {
+        "val": 1,
+        "test": 1
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 100,
+        "small_threshold": 0.3,
+        "small_agreement_k": 1,
+        "small_min_size": 80
+      },
+      "val": {
+        "dice": 0.8660835668713651,
+        "iou": 0.787170990165852
+      },
+      "test": {
+        "dice": 0.8732105243059473,
+        "iou": 0.798734334576089
+      },
+      "recovered_counts": {
+        "val": 1,
+        "test": 1
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 100,
+        "small_threshold": 0.3,
+        "small_agreement_k": 1,
+        "small_min_size": 98
+      },
+      "val": {
+        "dice": 0.8660835668713651,
+        "iou": 0.787170990165852
+      },
+      "test": {
+        "dice": 0.8732105243059473,
+        "iou": 0.798734334576089
+      },
+      "recovered_counts": {
+        "val": 1,
+        "test": 1
+      }
+    },
+    {
+      "rule": {
+        "baseline_threshold": 0.40025,
+        "baseline_agreement_k": 3,
+        "baseline_min_size": 98,
+        "small_area_max": 100,
+        "small_threshold": 0.3,
+        "small_agreement_k": 2,
+        "small_min_size": 0
+      },
+      "val": {
+        "dice": 0.8660835668713651,
+        "iou": 0.787170990165852
+      },
+      "test": {
+        "dice": 0.8732105243059473,
+        "iou": 0.798734334576089
+      },
+      "recovered_counts": {
+        "val": 1,
+        "test": 1
+      }
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "dice": 0.8527316553839321,
+  "iou": 0.7738626722631783,
+  "pixel_accuracy": 0.995238738841024,
+  "split": "test",
+  "num_samples": 461,
+  "checkpoint": "/home/fangdog/brain_tumor/tumor_segmentation/models/smp_deeplabv3plus_resnet50_320_seed45/best_unet2d.pt",
+  "device": "cuda:0"
+}

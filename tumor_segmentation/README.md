@@ -98,7 +98,28 @@ Evaluate cross-resolution ensemble (256 + 320):
   --output reports/ensemble_tta_old_deeplab320ft_test.json
 ```
 
-## Latest Experiment (2026-05-01)
+## Latest Published Result (2026-05-10)
+
+Best segmentation result on the fixed held-out test split:
+
+- Method: 8-model ref256 cached ensemble + consensus filtering + connected-component postprocess + Gaussian probability smoothing.
+- Models: `old`, `s44`, `s45`, `effb4ft`, `s384`, `s384s45`, `s384s56`, `s384s64`
+- Weights: `old=0.126987`, `s44=0.133843`, `s45=0.042123`, `effb4ft=0.158984`, `s384=0.220616`, `s384s45=0.158984`, `s384s56=0.148363`, `s384s64=0.010100`
+- Probability threshold: `0.40025`
+- Consensus rule: keep pixels supported by at least `3/8` models
+- Post-process: remove connected components smaller than `98` pixels + `fill_holes=true`
+- Probability smoothing: Gaussian `sigma=0.26`
+- Validation Dice: `0.866070092`
+- Validation IoU: `0.787150621`
+- Test Dice: `0.873212993`
+- Test IoU: `0.798736095`
+- GitHub experiment summary:
+  - `../github_assets/experiment_data/segmentation/segmentation_experiment_summary.md`
+  - `../github_assets/experiment_data/segmentation/segmentation_experiment_summary.csv`
+- Full-precision report:
+  - `../github_assets/experiment_data/segmentation/ensemble_ref256_best_smooth026_fullprecision_20260509.json`
+
+## Previous Notable Checkpoint (2026-05-01)
 
 Single-model best (`configs/segmentation_2d_smp_deeplabv3plus_resnet50_320_seed45.yaml`):
 

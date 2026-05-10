@@ -33,6 +33,11 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="When resuming, ignore existing training_history.json and start a fresh history list.",
     )
+    parser.add_argument(
+        "--resume-model-only",
+        action="store_true",
+        help="Load only model weights from --resume-checkpoint and reinitialize optimizer/scheduler/scaler.",
+    )
     return parser.parse_args()
 
 
@@ -63,6 +68,10 @@ def train_one_epoch(
     pos_weight,
     focal_weight: float,
     focal_gamma: float,
+    tversky_weight: float,
+    tversky_alpha: float,
+    tversky_beta: float,
+    boundary_weight: float,
     scheduler=None,
     scheduler_type: str = "none",
 ):
@@ -88,6 +97,10 @@ def train_one_epoch(
                 pos_weight=pos_weight,
                 focal_weight=focal_weight,
                 focal_gamma=focal_gamma,
+                tversky_weight=tversky_weight,
+                tversky_alpha=tversky_alpha,
+                tversky_beta=tversky_beta,
+                boundary_weight=boundary_weight,
             )
 
         scaler.scale(loss).backward()
@@ -111,7 +124,18 @@ def train_one_epoch(
     }
 
 
-def evaluate(model, loader, device, bce_weight: float, focal_weight: float, focal_gamma: float):
+def evaluate(
+    model,
+    loader,
+    device,
+    bce_weight: float,
+    focal_weight: float,
+    focal_gamma: float,
+    tversky_weight: float,
+    tversky_alpha: float,
+    tversky_beta: float,
+    boundary_weight: float,
+):
     import torch
 
     model.eval()
@@ -132,6 +156,10 @@ def evaluate(model, loader, device, bce_weight: float, focal_weight: float, foca
                 pos_weight=None,
                 focal_weight=focal_weight,
                 focal_gamma=focal_gamma,
+                tversky_weight=tversky_weight,
+                tversky_alpha=tversky_alpha,
+                tversky_beta=tversky_beta,
+                boundary_weight=boundary_weight,
             )
             metrics = binary_metrics(logits, masks)
             total_loss += float(loss.detach().cpu())
@@ -172,6 +200,15 @@ def main() -> None:
     in_channels = int(config.get("model", {}).get("in_channels", 1))
     stronger_aug = bool(train_cfg.get("stronger_aug", False))
     aggressive_aug = bool(train_cfg.get("aggressive_aug", False))
+    conservative_aug = bool(train_cfg.get("conservative_aug", False))
+    train_repeat = int(train_cfg.get("train_repeat", 1))
+    aug_qc_min_area_ratio = float(train_cfg.get("aug_qc_min_area_ratio", 0.45))
+    aug_qc_max_area_ratio = float(train_cfg.get("aug_qc_max_area_ratio", 1.85))
+    aug_qc_max_border_zero_increase = float(train_cfg.get("aug_qc_max_border_zero_increase", 0.28))
+    elastic_aug = bool(train_cfg.get("elastic_aug", False))
+    elastic_prob = float(train_cfg.get("elastic_prob", 0.2))
+    elastic_alpha = float(train_cfg.get("elastic_alpha", 5.0))
+    elastic_grid_size = int(train_cfg.get("elastic_grid_size", 5))
     train_ds = BrainTumorSegDataset(
         split["train"],
         image_size=image_size,
@@ -179,6 +216,15 @@ def main() -> None:
         in_channels=in_channels,
         stronger_aug=stronger_aug,
         aggressive_aug=aggressive_aug,
+        conservative_aug=conservative_aug,
+        train_repeat=train_repeat,
+        aug_qc_min_area_ratio=aug_qc_min_area_ratio,
+        aug_qc_max_area_ratio=aug_qc_max_area_ratio,
+        aug_qc_max_border_zero_increase=aug_qc_max_border_zero_increase,
+        elastic_aug=elastic_aug,
+        elastic_prob=elastic_prob,
+        elastic_alpha=elastic_alpha,
+        elastic_grid_size=elastic_grid_size,
     )
     val_ds = BrainTumorSegDataset(
         split["val"],
@@ -187,6 +233,7 @@ def main() -> None:
         in_channels=in_channels,
         stronger_aug=False,
         aggressive_aug=False,
+        conservative_aug=False,
     )
 
     num_workers = int(data_cfg.get("num_workers", 4))
@@ -253,6 +300,10 @@ def main() -> None:
     bce_weight = float(train_cfg.get("bce_weight", 0.5))
     focal_weight = float(train_cfg.get("focal_weight", 0.0))
     focal_gamma = float(train_cfg.get("focal_gamma", 2.0))
+    tversky_weight = float(train_cfg.get("tversky_weight", 0.0))
+    tversky_alpha = float(train_cfg.get("tversky_alpha", 0.3))
+    tversky_beta = float(train_cfg.get("tversky_beta", 0.7))
+    boundary_weight = float(train_cfg.get("boundary_weight", 0.0))
 
     output_dir = ensure_dir(ROOT / data_cfg["output_dir"])
     ensure_dir(ROOT / "reports")
@@ -272,16 +323,19 @@ def main() -> None:
             raise FileNotFoundError(f"Resume checkpoint not found: {resume_path}")
         ckpt = torch.load(resume_path, map_location=device)
         model.load_state_dict(ckpt["model_state"])
-        if "optimizer_state" in ckpt:
-            optimizer.load_state_dict(ckpt["optimizer_state"])
-        if "scaler_state" in ckpt and scaler.is_enabled():
-            scaler.load_state_dict(ckpt["scaler_state"])
-        if scheduler is not None and "scheduler_state" in ckpt and ckpt["scheduler_state"] is not None:
-            scheduler.load_state_dict(ckpt["scheduler_state"])
-
-        ckpt_epoch = int(ckpt.get("epoch", 0))
-        start_epoch = ckpt_epoch + 1
-        best_dice = float(ckpt.get("best_val_dice", ckpt.get("val_metrics", {}).get("dice", -1.0)))
+        if args.resume_model_only:
+            start_epoch = 1
+            best_dice = -1.0
+        else:
+            if "optimizer_state" in ckpt:
+                optimizer.load_state_dict(ckpt["optimizer_state"])
+            if "scaler_state" in ckpt and scaler.is_enabled():
+                scaler.load_state_dict(ckpt["scaler_state"])
+            if scheduler is not None and "scheduler_state" in ckpt and ckpt["scheduler_state"] is not None:
+                scheduler.load_state_dict(ckpt["scheduler_state"])
+            ckpt_epoch = int(ckpt.get("epoch", 0))
+            start_epoch = ckpt_epoch + 1
+            best_dice = float(ckpt.get("best_val_dice", ckpt.get("val_metrics", {}).get("dice", -1.0)))
         resumed = True
 
         if history_path.exists() and not args.reset_history:
@@ -304,6 +358,10 @@ def main() -> None:
             pos_weight=pos_weight,
             focal_weight=focal_weight,
             focal_gamma=focal_gamma,
+            tversky_weight=tversky_weight,
+            tversky_alpha=tversky_alpha,
+            tversky_beta=tversky_beta,
+            boundary_weight=boundary_weight,
             scheduler=scheduler,
             scheduler_type=scheduler_type,
         )
@@ -314,6 +372,10 @@ def main() -> None:
             bce_weight=bce_weight,
             focal_weight=focal_weight,
             focal_gamma=focal_gamma,
+            tversky_weight=tversky_weight,
+            tversky_alpha=tversky_alpha,
+            tversky_beta=tversky_beta,
+            boundary_weight=boundary_weight,
         )
 
         if val_metrics["dice"] > best_dice:
@@ -381,8 +443,21 @@ def main() -> None:
         "start_epoch": start_epoch,
         "end_epoch": history[-1]["epoch"] if history else start_epoch - 1,
         "train_count": len(split["train"]),
+        "train_count_effective_per_epoch": len(train_ds),
+        "train_repeat": train_repeat,
         "val_count": len(split["val"]),
         "test_count": len(split["test"]),
+        "conservative_aug": conservative_aug,
+        "stronger_aug": stronger_aug,
+        "aggressive_aug": aggressive_aug,
+        "elastic_aug": elastic_aug,
+        "elastic_prob": elastic_prob,
+        "elastic_alpha": elastic_alpha,
+        "elastic_grid_size": elastic_grid_size,
+        "tversky_weight": tversky_weight,
+        "tversky_alpha": tversky_alpha,
+        "tversky_beta": tversky_beta,
+        "boundary_weight": boundary_weight,
     }
     summary_path = ROOT / "reports" / "training_summary.json"
     with summary_path.open("w", encoding="utf-8") as handle:

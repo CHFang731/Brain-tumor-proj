@@ -1,0 +1,40 @@
+data:
+  dataset_root: ../kagglehub_cache/datasets/nikhilroxtomar/brain-tumor-segmentation/versions/1
+  split_json: data/processed/split_2d.json
+  output_dir: models/smp_deeplabv3plus_resnet50_384_seed65_from_seed62_polish2_ft
+  image_size: 384
+  num_workers: 4
+
+split:
+  train_fraction: 0.7
+  val_fraction: 0.15
+
+model:
+  architecture: smp_deeplabv3plus
+  encoder_name: resnet50
+  encoder_weights: imagenet
+  in_channels: 3
+  out_channels: 1
+
+training:
+  seed: 65
+  epochs: 28
+  batch_size: 5
+  learning_rate: 0.0000012
+  weight_decay: 0.00001
+  amp: true
+  bce_weight: 0.28
+  focal_weight: 0.24
+  focal_gamma: 2.0
+  pos_weight: 2.4
+  stronger_aug: false
+  aggressive_aug: false
+  conservative_aug: true
+  train_repeat: 2
+  aug_qc_min_area_ratio: 0.45
+  aug_qc_max_area_ratio: 1.85
+  aug_qc_max_border_zero_increase: 0.28
+  early_stopping_patience: 8
+  scheduler: cosine
+  scheduler_tmax: 28
+  scheduler_eta_min: 0.00000008

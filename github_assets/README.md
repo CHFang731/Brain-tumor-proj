@@ -36,6 +36,13 @@ Manifest:
 ## 3) Experiment Data Uploaded
 
 ### Segmentation
+- Summary table:
+  - `experiment_data/segmentation/segmentation_experiment_summary.md`
+  - `experiment_data/segmentation/segmentation_experiment_summary.csv`
+- Current best full-precision report:
+  - `experiment_data/segmentation/ensemble_ref256_best_smooth026_fullprecision_20260509.json`
+- Curated JSON reports for the 2026-05-10 upload:
+  - `experiment_data/segmentation/reports_20260510/`
 - `experiment_data/segmentation/ensemble_5model_s43_besttest_post_sweep_20260501.json`
 - `experiment_data/segmentation/ensemble_5model_s43_ultrafine_fullscan_20260501.json`
 - `experiment_data/segmentation/ensemble_consensus_k2_postprocess_sweep_20260501.json`
